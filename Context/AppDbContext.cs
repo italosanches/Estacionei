@@ -7,19 +7,17 @@ namespace Estacionei.Context
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            
+
         }
-        DbSet<Cliente> Clientes {  get; set; }
-        DbSet<Veiculo> Veiculos { get; set; }
+        public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<Veiculo> Veiculos { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Cliente>()
-               .HasMany(v => v.VeiculosCliente)
-               .WithOne(c => c.Cliente)
-               .HasForeignKey(c => c.ClienteId);
+            modelBuilder.Entity<Veiculo>()
+            .HasIndex(v => v.VeiculoPlaca)
+            .IsUnique();
         }
     }
 }
