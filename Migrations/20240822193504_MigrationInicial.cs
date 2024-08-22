@@ -5,7 +5,7 @@
 namespace Estacionei.Migrations
 {
     /// <inheritdoc />
-    public partial class CriacaoBanco : Migration
+    public partial class MigrationInicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,6 +28,8 @@ namespace Estacionei.Migrations
                 name: "Veiculos",
                 columns: table => new
                 {
+                    VeiculoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     VeiculoPlaca = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     VeiculoModelo = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
                     TipoVeiculo = table.Column<int>(type: "int", nullable: false),
@@ -35,7 +37,7 @@ namespace Estacionei.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Veiculos", x => x.VeiculoPlaca);
+                    table.PrimaryKey("PK_Veiculos", x => x.VeiculoId);
                     table.ForeignKey(
                         name: "FK_Veiculos_Clientes_ClienteId",
                         column: x => x.ClienteId,
@@ -48,6 +50,12 @@ namespace Estacionei.Migrations
                 name: "IX_Veiculos_ClienteId",
                 table: "Veiculos",
                 column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Veiculos_VeiculoPlaca",
+                table: "Veiculos",
+                column: "VeiculoPlaca",
+                unique: true);
         }
 
         /// <inheritdoc />

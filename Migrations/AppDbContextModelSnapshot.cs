@@ -46,9 +46,11 @@ namespace Estacionei.Migrations
 
             modelBuilder.Entity("Estacionei.Models.Veiculo", b =>
                 {
-                    b.Property<string>("VeiculoPlaca")
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                    b.Property<int>("VeiculoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VeiculoId"));
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
@@ -61,9 +63,17 @@ namespace Estacionei.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
-                    b.HasKey("VeiculoPlaca");
+                    b.Property<string>("VeiculoPlaca")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.HasKey("VeiculoId");
 
                     b.HasIndex("ClienteId");
+
+                    b.HasIndex("VeiculoPlaca")
+                        .IsUnique();
 
                     b.ToTable("Veiculos");
                 });

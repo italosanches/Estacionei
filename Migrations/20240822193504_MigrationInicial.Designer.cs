@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Estacionei.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240821212735_CriacaoBanco")]
-    partial class CriacaoBanco
+    [Migration("20240822193504_MigrationInicial")]
+    partial class MigrationInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,9 +49,11 @@ namespace Estacionei.Migrations
 
             modelBuilder.Entity("Estacionei.Models.Veiculo", b =>
                 {
-                    b.Property<string>("VeiculoPlaca")
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                    b.Property<int>("VeiculoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VeiculoId"));
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
@@ -64,9 +66,17 @@ namespace Estacionei.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
-                    b.HasKey("VeiculoPlaca");
+                    b.Property<string>("VeiculoPlaca")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.HasKey("VeiculoId");
 
                     b.HasIndex("ClienteId");
+
+                    b.HasIndex("VeiculoPlaca")
+                        .IsUnique();
 
                     b.ToTable("Veiculos");
                 });
