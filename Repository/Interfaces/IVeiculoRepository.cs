@@ -5,7 +5,7 @@ namespace Estacionei.Repository.Interfaces
     public interface IVeiculoRepository
     {
         Task<IEnumerable<Veiculo>> GetAllAsync();
-        Task<Veiculo> GetByIdAsync(string id);
+        Task<Veiculo> GetByIdAsync(int id);
 
         Task<Veiculo> GetByPlacaAsync(string placa);
         Task<int> AddAsync(Veiculo veiculo);

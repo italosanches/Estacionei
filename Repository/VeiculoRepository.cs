@@ -2,6 +2,7 @@
 using Estacionei.Models;
 using Estacionei.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 
 namespace Estacionei.Repository
 {
@@ -39,12 +40,13 @@ namespace Estacionei.Repository
             throw new NotImplementedException();
         }
 
-        public Task<Veiculo> GetByIdAsync(string id)
+        public async Task<Veiculo> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
-        }
+			return await _context.Veiculos.AsNoTracking().FirstOrDefaultAsync(x => x.VeiculoId == id);
 
-        public async Task<Veiculo> GetByPlacaAsync(string placa)
+		}
+
+		public async Task<Veiculo> GetByPlacaAsync(string placa)
         {
           return await _context.Veiculos.AsNoTracking().FirstOrDefaultAsync(x=> x.VeiculoPlaca == placa);
         }
