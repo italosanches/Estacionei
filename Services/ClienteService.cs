@@ -43,9 +43,9 @@ namespace Estacionei.Services
 			throw new NotImplementedException();
 		}
 
-		public Task<IEnumerable<Cliente>> GetAllClienteAsync()
+		public async Task<IEnumerable<Cliente>> GetAllClienteAsync()
 		{
-			throw new NotImplementedException();
+			return await _clienteRepository.GetAllAsync();
 		}
 
 		public async Task<ResponseBase<ClienteGetDto>> GetClienteByIdAsync(int id)
