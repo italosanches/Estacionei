@@ -6,8 +6,6 @@ namespace Estacionei.Repository.Interfaces
     {
         Task<IEnumerable<Veiculo>> GetAllAsync();
         Task<Veiculo> GetByIdAsync(int id);
-		Task<IEnumerable<Veiculo>> GetByIdsAsync(List<int> ids);
-
 
 		Task<Veiculo> GetByPlacaAsync(string placa);
         Task<int> AddAsync(Veiculo veiculo);
