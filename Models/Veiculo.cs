@@ -23,9 +23,9 @@ namespace Estacionei.Models
         public string VeiculoModelo { get; set; }
         [Required]
         public TipoVeiculo TipoVeiculo { get; set; }
-        //[Required(ErrorMessage ="ID do cliente é obrigatorio.")]
+        [Required(ErrorMessage ="ID do cliente é obrigatorio.")]
         public int ClienteId { get; set; }
-        [JsonIgnore]
+
         public virtual Cliente? Cliente { get; set; }
     }
 }

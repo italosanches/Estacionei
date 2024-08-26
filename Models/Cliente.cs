@@ -14,13 +14,12 @@ namespace Estacionei.Models
         [Key]
         public int ClienteId { get; set; }
 
-        [Required(ErrorMessage ="Nome é obrigatorio.")]
-        [Length(1,50,ErrorMessage ="Nome deve ter entre 1 e 50 caracteres.")]
+        [Required]
         [StringLength(50)]
         public string ClienteNome { get; set; }
 
-        [MinLength(11,ErrorMessage ="Telefone invalido.")]
-        [StringLength(12)]
+        [Required]
+        [Phone]
         public string ClienteTelefone {  get; set; } 
 
         public ICollection<Veiculo> VeiculosCliente { get; set; }
