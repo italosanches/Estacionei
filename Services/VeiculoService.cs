@@ -1,4 +1,6 @@
-﻿using Estacionei.Models;
+﻿using AutoMapper;
+using Estacionei.DTOs;
+using Estacionei.Models;
 using Estacionei.Repository.Interfaces;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
@@ -9,6 +11,7 @@ namespace Estacionei.Services
     {
         private readonly IVeiculoRepository _veiculoRepository;
         private readonly IClienteRepository _clienteRepository;
+        private readonly IMapper _mapper;
 
       
         public VeiculoService(IVeiculoRepository veiculoRepository, IClienteRepository clienteRepository)
@@ -17,11 +20,11 @@ namespace Estacionei.Services
             _clienteRepository = clienteRepository;
         }
 
-        public async Task<ResponseBase<Veiculo>> AddVeiculoAsync(Veiculo veiculo)
+        public async Task<ResponseBase<Veiculo>> AddVeiculoAsync(VeiculoDto veiculoDto)
         {
             //IEnumerable<Veiculo> veiculoList = await _veiculoRepository.GetAllAsync();
-            var localizarVeiculo = await _veiculoRepository.GetByPlacaAsync(veiculo.VeiculoPlaca) ?? null;
-            if(!await ClienteExists(veiculo.ClienteId)) 
+            var localizarVeiculo = await _veiculoRepository.GetByPlacaAsync(veiculoDto.VeiculoPlaca) ?? null;
+            if(!await ClienteExists(veiculoDto.ClienteId)) 
             {
                 return ResponseBase<Veiculo>.FailureResult("Cliente não existe.");
             };
@@ -29,6 +32,7 @@ namespace Estacionei.Services
             {
                 return ResponseBase<Veiculo>.FailureResult("Placa ja existe no banco de dados.");
             }
+            var veiculo = _mapper.Map<Veiculo>(veiculoDto);
             veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.Trim().ToUpper();
             await _veiculoRepository.AddAsync(veiculo);
             return ResponseBase<Veiculo>.SuccessResult(veiculo,"veiculo cadastrado com sucesso");

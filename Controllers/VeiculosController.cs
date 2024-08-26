@@ -1,4 +1,5 @@
-﻿using Estacionei.Models;
+﻿using Estacionei.DTOs;
+using Estacionei.Models;
 using Estacionei.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +19,11 @@ namespace Estacionei.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Veiculo veiculo) 
+        public async Task<IActionResult> Create(VeiculoDto veiculoDto) 
         {
             try
             {
-               var result = await _veiculoService.AddVeiculoAsync(veiculo);
+               var result = await _veiculoService.AddVeiculoAsync(veiculoDto);
                 if (!result.Success) 
                 {
                     return BadRequest(result.Message);
