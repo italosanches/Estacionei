@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Estacionei.DTOs;
+using Estacionei.DTOs.Cliente;
 using Estacionei.Mapping;
 using Estacionei.Models;
 using Estacionei.Repository.Interfaces;
@@ -9,7 +9,7 @@ using System.Reflection.Metadata;
 
 namespace Estacionei.Services
 {
-	public class ClienteService : IClienteService
+    public class ClienteService : IClienteService
 	{
 		private readonly IClienteRepository _clienteRepository;
 		private readonly IMapper _mapper;
@@ -34,18 +34,39 @@ namespace Estacionei.Services
 
 			}
 		}
-		public Task<ResponseBase<Cliente>> UpdateClienteAsync(Cliente cliente)
+
+		public async Task<ResponseBase<ClienteUpdateDto>> UpdateClienteAsync(int id, ClienteUpdateDto clienteDto)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				if (id != clienteDto.ClienteId)
+				{
+					return ResponseBase<ClienteUpdateDto>.FailureResult("Ids divergentes");
+				}
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
 		}
 		public Task<ResponseBase<Cliente>> DeleteClienteAsync(int id)
 		{
 			throw new NotImplementedException();
 		}
 
-		public async Task<IEnumerable<Cliente>> GetAllClienteAsync()
+		public async Task<ResponseBase<IEnumerable<ClienteGetDto>>> GetAllClienteAsync()
 		{
-			return await _clienteRepository.GetAllAsync();
+			try
+			{
+				var clientes = await _clienteRepository.GetAllAsync();
+				var clientesDto = _mapper.Map<IEnumerable<ClienteGetDto>>(clientes);
+				return ResponseBase<IEnumerable<ClienteGetDto>>.SuccessResult(clientesDto,"Lista de clientes");
+			}
+			catch (Exception ex)
+			{
+				return ResponseBase<IEnumerable<ClienteGetDto>>.FailureResult($"Erro ao pesquisar cliente {ex.Message}");
+			}
 		}
 
 		public async Task<ResponseBase<ClienteGetDto>> GetClienteByIdAsync(int id)
@@ -64,11 +85,6 @@ namespace Estacionei.Services
 			{
 				return ResponseBase<ClienteGetDto>.FailureResult($"Erro ao pesquisar cliente {ex.Message}");
 			}
-		}
-
-		public Task<ResponseBase<ClienteGetDto>> GetClienteByNameAsync(string name)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

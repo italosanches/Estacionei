@@ -6,11 +6,9 @@ namespace Estacionei.Repository.Interfaces
     {
         Task<IEnumerable<Cliente>> GetAllAsync();
         Task<Cliente> GetByIdAsync(int id);
-
-        Task<Cliente> GetByNameAsync(string name);
         Task<int> AddAsync(Cliente cliente);
-        Task UpdateAsync(Cliente cliente);
-        Task DeleteAsync(int id);
+        Task<bool> UpdateAsync(Cliente cliente);
+        Task<bool> DeleteAsync(Cliente cliente);
 
 
     }

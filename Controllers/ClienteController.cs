@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Estacionei.DTOs;
+using Estacionei.DTOs.Cliente;
 using Estacionei.Models;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
@@ -8,19 +8,30 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Estacionei.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class ClienteController : ControllerBase
 	{
 		private readonly IClienteService _clienteService;
-		private readonly IMapper _mapper;
 
-		public ClienteController(IClienteService clienteService, IMapper mapper)
+		public ClienteController(IClienteService clienteService)
 		{
 			_clienteService = clienteService;
-			_mapper = mapper;
 		}
-		[HttpGet("{id:int}")]
+		[HttpGet]
+		public async Task<IActionResult> GetAll()
+		{
+			var result = await _clienteService.GetAllClienteAsync();
+			if (result.Success) 
+			{ 
+				return Ok(result.Data);
+			}
+			else
+			{
+				return BadRequest(result.Message);
+			}
+		}
+		[HttpGet("{id:int}",Name = "GetById")]
 		public async Task<IActionResult> GetById(int id)
 		{
 
@@ -41,7 +52,7 @@ namespace Estacionei.Controllers
 			var result = await _clienteService.AddClienteAsync(clientedto);
 			if (result.Success)
 			{
-				return Ok(result);
+				return CreatedAtAction(nameof(GetById), new { id = result.Data.ClienteId }, result.Data);
 			}
 			else
 			{

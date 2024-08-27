@@ -33,14 +33,31 @@ namespace Estacionei.Repository
 
 		}
 
-		public Task DeleteAsync(int id)
+		public async Task<bool> DeleteAsync(Cliente cliente)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				_context.Clientes.Remove(cliente);
+				await _context.SaveChangesAsync();
+				return true;
+			}
+			catch (Exception ex) 
+			{ 
+				throw new Exception($"Erro ao remover o clientes no banco:  {ex.InnerException?.Message}");
+			}
 		}
 
 		public async Task<IEnumerable<Cliente>> GetAllAsync()
 		{
-			return await _context.Clientes.AsNoTracking().ToListAsync();
+			try
+			{
+				return await _context.Clientes.AsNoTracking().ToListAsync();
+			}
+			catch (Exception ex) 
+			{ 
+				throw new Exception($"Erro ao pesquisar os clientes no banco:  {ex.InnerException?.Message}");
+			}
+
 		}
 
 		public async Task<Cliente> GetByIdAsync(int id)
@@ -51,18 +68,27 @@ namespace Estacionei.Repository
 			}
 			catch (Exception ex)
 			{
-				throw new Exception($"Erro ao pesquisar o cliente no banco {ex.Message}");
+				throw new Exception($"Erro ao pesquisar o cliente no banco:  {ex.InnerException?.Message}");
 			}
 		}
 
-		public Task<Cliente> GetByNameAsync(string name)
+		public async Task<bool> UpdateAsync(Cliente cliente)
 		{
-			throw new NotImplementedException();
-		}
+			try
+			{
+				_context.Entry(cliente).State = EntityState.Modified;
+				await _context.SaveChangesAsync();
+				return true;
+			}
+			catch(DbUpdateException dbEx)
+			{
+				throw new Exception($"Erro ao atualizar o cliente no banco: {dbEx.InnerException?.Message}");
 
-		public Task UpdateAsync(Cliente cliente)
-		{
-			throw new NotImplementedException();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception($"Erro ao atualizar o cliente no banco: {ex.InnerException?.Message}");
+			}
 		}
 	}
 }
