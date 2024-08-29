@@ -40,7 +40,7 @@ namespace Estacionei.Repository
         }
         public async Task<bool> UpdateAsync(Cliente cliente)
 		{
-            _context.Entry(cliente).State = EntityState.Modified;
+            _context.Clientes.Entry(cliente).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return true;
         }
