@@ -1,4 +1,5 @@
 using Estacionei.Context;
+using Estacionei.Extensions;
 using Estacionei.Mapping;
 using Estacionei.Repository;
 using Estacionei.Repository.Interfaces;
@@ -29,6 +30,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ConfigureExceptionHandler();
 }
 
 app.UseHttpsRedirection();
