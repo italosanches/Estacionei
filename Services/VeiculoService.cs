@@ -4,6 +4,7 @@ using Estacionei.Models;
 using Estacionei.Repository.Interfaces;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
+using System.Net;
 
 namespace Estacionei.Services
 {
@@ -26,11 +27,11 @@ namespace Estacionei.Services
             var localizarVeiculo = await _veiculoRepository.GetByPlacaAsync(veiculoDto.VeiculoPlaca) ?? null;
             if(!await ClienteExists(veiculoDto.ClienteId)) 
             {
-                return ResponseBase<Veiculo>.FailureResult("Cliente não existe.");
+                return ResponseBase<Veiculo>.FailureResult("Cliente não existe.",HttpStatusCode.NotFound);
             };
             if (localizarVeiculo != null)
             {
-                return ResponseBase<Veiculo>.FailureResult("Placa ja existe no banco de dados.");
+                return ResponseBase<Veiculo>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
             }
             var veiculo = _mapper.Map<Veiculo>(veiculoDto);
             veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.Trim().ToUpper();
