@@ -1,4 +1,5 @@
 ﻿using Estacionei.Models;
+using System.Linq.Expressions;
 
 namespace Estacionei.Repository.Interfaces
 {
@@ -6,6 +7,7 @@ namespace Estacionei.Repository.Interfaces
 	{
 		Task<IEnumerable<T>> GetAllAsync();
 		Task<T> GetByIdAsync(int id);
+		Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
 		Task<int> AddAsync(T entity);
 		Task UpdateAsync(T entity);
 		Task DeleteAsync(T entity);

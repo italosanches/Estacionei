@@ -2,6 +2,7 @@
 using Estacionei.Models;
 using Estacionei.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using System.Numerics;
 
 namespace Estacionei.Repository
@@ -16,13 +17,18 @@ namespace Estacionei.Repository
 		}
 		public async Task<IEnumerable<Veiculo>> GetAllAsync()
 		{
-			return await _context.Veiculos.AsNoTracking().ToListAsync<Veiculo>();
+			return await _context.Veiculos.AsNoTracking().ToListAsync();
 
 		}
 		public async Task<Veiculo> GetByIdAsync(int id)
 		{
 			return await _context.Veiculos.AsNoTracking().FirstOrDefaultAsync(x => x.VeiculoId == id);
 
+		}
+
+		public async Task<IEnumerable<Veiculo>> FindAsync(Expression<Func<Veiculo, bool>> predicate)
+		{
+			return await _context.Veiculos.AsNoTracking().Where(predicate).ToListAsync();
 		}
 
 		public async Task<int> AddAsync(Veiculo veiculo)
@@ -43,5 +49,7 @@ namespace Estacionei.Repository
 			_context.Veiculos.Remove(veiculo);
 			await _context.SaveChangesAsync();
 		}
+
+		
 	}
 }

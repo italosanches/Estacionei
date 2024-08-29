@@ -2,6 +2,7 @@
 using Estacionei.Models;
 using Estacionei.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Estacionei.Repository
 {
@@ -23,7 +24,11 @@ namespace Estacionei.Repository
 		{
             return await _context.Clientes.AsNoTracking().FirstOrDefaultAsync(x => x.ClienteId == id);
         }
-        public async Task<int> AddAsync(Cliente cliente)
+		public async Task<IEnumerable<Cliente>> FindAsync(Expression<Func<Cliente, bool>> predicate)
+		{
+			return await _context.Clientes.AsNoTracking().Where(predicate).ToListAsync();
+		}
+		public async Task<int> AddAsync(Cliente cliente)
         {
             await _context.Clientes.AddAsync(cliente);
             await _context.SaveChangesAsync();
@@ -40,5 +45,7 @@ namespace Estacionei.Repository
             _context.Clientes.Entry(cliente).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
+		
 	}
 }
