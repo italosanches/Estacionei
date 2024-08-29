@@ -1,6 +1,7 @@
 using Estacionei.Context;
 using Estacionei.Extensions;
 using Estacionei.Mapping;
+using Estacionei.Models;
 using Estacionei.Repository;
 using Estacionei.Repository.Interfaces;
 using Estacionei.Services;
@@ -20,7 +21,7 @@ builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IVeiculoRepository,VeiculoRepository>();
 builder.Services.AddScoped<IVeiculoService, VeiculoService>();
-builder.Services.AddAutoMapper(typeof(MappingProfile)); // Ajuste conforme necessário
+builder.Services.AddAutoMapper(typeof(MappingProfile)); 
 
 
 var app = builder.Build();
