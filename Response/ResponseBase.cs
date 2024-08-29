@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json.Serialization;
 
 namespace Estacionei.Response
 {
@@ -10,8 +11,7 @@ namespace Estacionei.Response
         public string? Message { get; set; }
 
         public static ResponseBase<T> SuccessResult(T data, string message,HttpStatusCode statusCode = HttpStatusCode.OK) => new ResponseBase<T> { Success = true, Data = data, Message = message, StatusCode = statusCode};
-        //public static ResponseBase<T> NotFoundResult(string message) => new ResponseBase<T> { Success = false, StatusCode = HttpStatusCode.NotFound, Message = message };
-
+       
         public static ResponseBase<T> FailureResult(string message,HttpStatusCode statusCode) => new ResponseBase<T> { Success = false, Message = message, StatusCode = statusCode };
     }
 
