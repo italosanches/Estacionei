@@ -5,6 +5,7 @@ using Estacionei.Models;
 using Estacionei.Repository.Interfaces;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
+using System.Net;
 using System.Reflection.Metadata;
 
 namespace Estacionei.Services
@@ -22,69 +23,56 @@ namespace Estacionei.Services
 
 		public async Task<ResponseBase<ClienteGetDto>> AddClienteAsync(ClienteCreateDto clienteDto)
 		{
-			try
-			{
-				var cliente = _mapper.Map<Cliente>(clienteDto);
-				await _clienteRepository.AddAsync(cliente);
-				return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente cadastrado com sucesso");
-			}
-			catch (Exception ex)
-			{
-				return ResponseBase<ClienteGetDto>.FailureResult($"Erro ao salvar o cliente {ex.Message}");
+            var cliente = _mapper.Map<Cliente>(clienteDto);
+            await _clienteRepository.AddAsync(cliente);
+            return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente cadastrado com sucesso.");
+        }
 
-			}
-		}
-
-		public async Task<ResponseBase<ClienteUpdateDto>> UpdateClienteAsync(int id, ClienteUpdateDto clienteDto)
+		public async Task<ResponseBase<bool>> UpdateClienteAsync(int id,ClienteUpdateDto clienteDto)
 		{
-			try
+			var cliente = await GetCliente(id);
+			if(cliente == null)
 			{
-				if (id != clienteDto.ClienteId)
-				{
-					return ResponseBase<ClienteUpdateDto>.FailureResult("Ids divergentes");
-				}
-			}
-			catch (Exception)
-			{
-
-				throw;
-			}
+                return ResponseBase<bool>.FailureResult("Cliente atualizado com sucesso.",HttpStatusCode.NotFound);
+            }
+            await _clienteRepository.UpdateAsync(_mapper.Map<Cliente>(clienteDto));
+			return ResponseBase<bool>.SuccessResult(true,"Cliente atualizado com sucesso.");
 		}
-		public Task<ResponseBase<Cliente>> DeleteClienteAsync(int id)
+		public async Task<ResponseBase<bool>> DeleteClienteAsync(int id)
 		{
-			throw new NotImplementedException();
-		}
+			var cliente = await GetCliente(id);
+			if(cliente == null)
+			{
+				return ResponseBase<bool>.FailureResult("Cliente não encontrado.", HttpStatusCode.NotFound);
+			}
+			await _clienteRepository.DeleteAsync(cliente);
+            return ResponseBase<bool>.SuccessResult(true, "Cliente deletado com sucesso.");
 
-		public async Task<ResponseBase<IEnumerable<ClienteGetDto>>> GetAllClienteAsync()
+
+        }
+
+        public async Task<ResponseBase<IEnumerable<ClienteGetDto>>> GetAllClienteAsync()
 		{
-			try
-			{
-				var clientes = await _clienteRepository.GetAllAsync();
-				var clientesDto = _mapper.Map<IEnumerable<ClienteGetDto>>(clientes);
-				return ResponseBase<IEnumerable<ClienteGetDto>>.SuccessResult(clientesDto,"Lista de clientes");
-			}
-			catch (Exception ex)
-			{
-				return ResponseBase<IEnumerable<ClienteGetDto>>.FailureResult($"Erro ao pesquisar cliente {ex.Message}");
-			}
-		}
+            var clientes = await _clienteRepository.GetAllAsync();
+            var clientesDto = _mapper.Map<IEnumerable<ClienteGetDto>>(clientes);
+            return ResponseBase<IEnumerable<ClienteGetDto>>.SuccessResult(clientesDto, "Lista de clientes");
+        }
 
 		public async Task<ResponseBase<ClienteGetDto>> GetClienteByIdAsync(int id)
 		{
-			try
-			{
-				var cliente = await _clienteRepository.GetByIdAsync(id);
-				if (cliente == null)
-				{
-					return ResponseBase<ClienteGetDto>.FailureResult("Cliente não encontrado");
-				}
+            var cliente = await _clienteRepository.GetByIdAsync(id);
+            if (cliente == null)
+            {
+                return ResponseBase<ClienteGetDto>.FailureResult("Cliente não encontrado",HttpStatusCode.NotFound);
+            }
 
-				return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente encontrado");
-			}
-			catch (Exception ex)
-			{
-				return ResponseBase<ClienteGetDto>.FailureResult($"Erro ao pesquisar cliente {ex.Message}");
-			}
+            return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente encontrado");
+        }
+
+		private async Task<Cliente> GetCliente(int id)
+		{
+			var cliente = await _clienteRepository.GetByIdAsync(id);
+			return cliente;
 		}
 	}
 }

@@ -5,6 +5,7 @@ using Estacionei.Response;
 using Estacionei.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Estacionei.Controllers
 {
@@ -18,17 +19,17 @@ namespace Estacionei.Controllers
 		{
 			_clienteService = clienteService;
 		}
-		[HttpGet]
+		[HttpGet("Clientes")]
 		public async Task<IActionResult> GetAll()
 		{
 			var result = await _clienteService.GetAllClienteAsync();
 			if (result.Success) 
 			{ 
-				return Ok(result.Data);
+				return StatusCode((int)result.StatusCode,(result.Data));
 			}
 			else
 			{
-				return BadRequest(result.Message);
+				return StatusCode((int)result.StatusCode,(result.Message));
 			}
 		}
 		[HttpGet("{id:int}",Name = "GetById")]
@@ -38,11 +39,11 @@ namespace Estacionei.Controllers
 			var result = await _clienteService.GetClienteByIdAsync(id);
 			if(result.Success)
 			{
-				return Ok(result.Data);
+				return StatusCode((int)result.StatusCode, (result.Data));
 			}
 			else
 			{
-				return BadRequest(result.Message);
+				return StatusCode((int)result.StatusCode, (result.Message));
 			}	
 		}
 
@@ -56,7 +57,7 @@ namespace Estacionei.Controllers
 			}
 			else
 			{
-				return BadRequest(result.Message);
+				return StatusCode((int)result.StatusCode, (result.Message));
 			}
 
 		}
