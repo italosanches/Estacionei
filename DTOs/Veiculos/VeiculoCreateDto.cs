@@ -2,7 +2,7 @@
 
 namespace Estacionei.DTOs
 {
-	public class VeiculoDto
+	public class VeiculoCreateDto
 	{
 		public string VeiculoPlaca { get; set; }
 		public string VeiculoModelo { get; set; }
