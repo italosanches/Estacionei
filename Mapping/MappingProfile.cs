@@ -9,11 +9,13 @@ namespace Estacionei.Mapping
 	{
 		public MappingProfile() 
 		{
+			//Cliente
 			CreateMap<ClienteCreateDto, Cliente>();
 			CreateMap<Cliente, ClienteGetDto>();
 			CreateMap<ClienteUpdateDto, Cliente>();
 
-			CreateMap<VeiculoDto, Veiculo>();
+			//Veiculos
+			CreateMap<VeiculoCreateDto, Veiculo>();
 		}
 	}
 }
