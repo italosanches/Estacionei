@@ -19,32 +19,20 @@ namespace Estacionei.Controllers
 		{
 			_clienteService = clienteService;
 		}
+
 		[HttpGet("Clientes")]
 		public async Task<IActionResult> GetAll()
 		{
 			var result = await _clienteService.GetAllClienteAsync();
-			if (result.Success) 
-			{ 
-				return StatusCode((int)result.StatusCode,(result.Data));
-			}
-			else
-			{
-				return StatusCode((int)result.StatusCode,(result.Message));
-			}
+			return StatusCode((int)result.StatusCode, (result.Data));
 		}
+
 		[HttpGet("{id:int}",Name = "GetById")]
 		public async Task<IActionResult> GetById(int id)
 		{
 
 			var result = await _clienteService.GetClienteByIdAsync(id);
-			if(result.Success)
-			{
-				return StatusCode((int)result.StatusCode, (result.Data));
-			}
-			else
-			{
-				return StatusCode((int)result.StatusCode, (result.Message));
-			}	
+			return StatusCode((int)result.StatusCode, (result.Data));
 		}
 
 		[HttpPost]
@@ -60,6 +48,21 @@ namespace Estacionei.Controllers
 				return StatusCode((int)result.StatusCode, (result.Message));
 			}
 
+		}
+
+		[HttpPut]
+		public async Task<IActionResult> Update(ClienteUpdateDto clientedto)
+		{
+			
+			var result = await _clienteService.UpdateClienteAsync(clientedto);
+			return StatusCode((int)result.StatusCode, result.Message);
+		}
+
+		[HttpDelete("{id:int}")]
+		public async Task<IActionResult> Delete (int id)
+		{
+			var result = await _clienteService.DeleteClienteAsync(id);
+			return StatusCode((int)result.StatusCode, result.Message);
 		}
 	}
 }
