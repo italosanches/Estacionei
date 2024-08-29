@@ -9,7 +9,7 @@ namespace Estacionei.Services.Interfaces
         Task<ResponseBase<IEnumerable<ClienteGetDto>>> GetAllClienteAsync();
         Task<ResponseBase<ClienteGetDto>> GetClienteByIdAsync(int id);
         Task<ResponseBase<ClienteGetDto>> AddClienteAsync(ClienteCreateDto clienteDto);
-        Task<ResponseBase<bool>> UpdateClienteAsync(int id,ClienteUpdateDto clienteDto);
+        Task<ResponseBase<bool>> UpdateClienteAsync(ClienteUpdateDto clienteDto);
         Task<ResponseBase<bool>> DeleteClienteAsync(int id);
     }
 }

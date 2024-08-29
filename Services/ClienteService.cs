@@ -28,12 +28,12 @@ namespace Estacionei.Services
             return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente cadastrado com sucesso.");
         }
 
-		public async Task<ResponseBase<bool>> UpdateClienteAsync(int id,ClienteUpdateDto clienteDto)
+		public async Task<ResponseBase<bool>> UpdateClienteAsync(ClienteUpdateDto clienteDto)
 		{
-			var cliente = await GetCliente(id);
+			var cliente = await GetCliente(clienteDto.ClienteId);
 			if(cliente == null)
 			{
-                return ResponseBase<bool>.FailureResult("Cliente atualizado com sucesso.",HttpStatusCode.NotFound);
+                return ResponseBase<bool>.FailureResult("Cliente não encontrado.",HttpStatusCode.NotFound);
             }
             await _clienteRepository.UpdateAsync(_mapper.Map<Cliente>(clienteDto));
 			return ResponseBase<bool>.SuccessResult(true,"Cliente atualizado com sucesso.");
