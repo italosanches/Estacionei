@@ -29,7 +29,7 @@ namespace Estacionei.Services
 
 		public async Task<ResponseBase<ClienteGetDto>> GetClienteByIdAsync(int id)
 		{
-			var cliente = await _clienteRepository.GetByIdAsync(id);
+			var cliente = await GetCliente(id);
 			if (cliente == null)
 			{
 				return ResponseBase<ClienteGetDto>.FailureResult("Cliente não encontrado", HttpStatusCode.NotFound);
