@@ -19,23 +19,14 @@ namespace Estacionei.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(VeiculoDto veiculoDto) 
+        public async Task<IActionResult> Create(VeiculoCreateDto veiculoCreateDto) 
         {
-            try
-            {
-               var result = await _veiculoService.AddVeiculoAsync(veiculoDto);
-                if (!result.Success) 
-                {
-                    return BadRequest(result.Message);
-                }
-              return Ok(result);
-                
-            }
-            catch (Exception ex)
-            {
-
-                return BadRequest(ex.Message);
-            }
-        }
+			var result = await _veiculoService.AddVeiculoAsync(veiculoCreateDto);
+			if (!result.Success)
+			{
+				return BadRequest(result.Message);
+			}
+			return Ok(result);
+		}
     }
 }

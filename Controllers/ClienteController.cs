@@ -32,7 +32,14 @@ namespace Estacionei.Controllers
 		{
 
 			var result = await _clienteService.GetClienteByIdAsync(id);
-			return StatusCode((int)result.StatusCode, (result.Data));
+			if(result.Success)
+			{
+				return StatusCode((int)result.StatusCode, result.Data);
+			}
+			else
+			{
+				return StatusCode((int)result.StatusCode, result.Message);
+			}
 		}
 
 		[HttpPost]
