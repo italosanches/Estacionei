@@ -14,8 +14,6 @@ namespace Estacionei.Repository
 			_context = context;
 		}
 
-	
-
 		public async Task<IEnumerable<Cliente>> GetAllAsync()
 		{
             return await _context.Clientes.AsNoTracking().ToListAsync();
@@ -32,17 +30,15 @@ namespace Estacionei.Repository
             return cliente.ClienteId;
 
         }
-        public async Task<bool> DeleteAsync(Cliente cliente)
+        public async Task DeleteAsync(Cliente cliente)
         {
             _context.Clientes.Remove(cliente);
             await _context.SaveChangesAsync();
-            return true;
         }
-        public async Task<bool> UpdateAsync(Cliente cliente)
+        public async Task UpdateAsync(Cliente cliente)
 		{
             _context.Clientes.Entry(cliente).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return true;
         }
 	}
 }

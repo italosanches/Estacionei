@@ -14,49 +14,34 @@ namespace Estacionei.Repository
 		{
 			_context = context;
 		}
-
-		public async Task<int> AddAsync(Veiculo veiculo)
-		{
-			try
-			{
-				await _context.Veiculos.AddAsync(veiculo);
-				_context.SaveChanges();
-			}
-			catch (Exception ex)
-			{
-				new Exception("Erro ao gravar veiculo" + ex.Message, ex);
-			}
-			return veiculo.VeiculoId;
-
-		}
-
-		public Task DeleteAsync(string placa)
-		{
-			throw new NotImplementedException();
-		}
-
 		public async Task<IEnumerable<Veiculo>> GetAllAsync()
 		{
 			return await _context.Veiculos.AsNoTracking().ToListAsync<Veiculo>();
 
 		}
-
-
-
 		public async Task<Veiculo> GetByIdAsync(int id)
 		{
 			return await _context.Veiculos.AsNoTracking().FirstOrDefaultAsync(x => x.VeiculoId == id);
 
 		}
 
-		public async Task<Veiculo> GetByPlacaAsync(string placa)
+		public async Task<int> AddAsync(Veiculo veiculo)
 		{
-			return await _context.Veiculos.AsNoTracking().FirstOrDefaultAsync(x => x.VeiculoPlaca == placa);
-		}
 
-		public Task UpdateAsync(Veiculo veiculo)
+			await _context.Veiculos.AddAsync(veiculo);
+			_context.SaveChanges();
+			return veiculo.VeiculoId;
+
+		}
+		public async Task UpdateAsync(Veiculo veiculo)
 		{
-			throw new NotImplementedException();
+			_context.Veiculos.Entry(veiculo).State = EntityState.Modified;
+			await _context.SaveChangesAsync();
+		}
+		public async Task DeleteAsync(Veiculo veiculo)
+		{
+			_context.Veiculos.Remove(veiculo);
+			await _context.SaveChangesAsync();
 		}
 	}
 }
