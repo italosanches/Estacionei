@@ -8,8 +8,8 @@ namespace Estacionei.Services.Interfaces
     {
         Task<IEnumerable<Veiculo>> GetAllVeiculoAsync();
         Task<Veiculo> GetVeiculoByIdAsync(int id);
-        Task<Veiculo> GetVeiculoByPlacaAsync(string placa);
-        Task<ResponseBase<Veiculo>> AddVeiculoAsync(VeiculoDto veiculoDto);
+        //Task<Veiculo> GetVeiculoByPlacaAsync(string placa);
+        Task<ResponseBase<Veiculo>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto);
         Task UpdateVeiculoAsync(Veiculo veiculo);
         Task DeleteVeiculoAsync(int id);
 

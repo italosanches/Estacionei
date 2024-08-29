@@ -11,29 +11,30 @@ namespace Estacionei.Services
     public class VeiculoService : IVeiculoService
     {
         private readonly IVeiculoRepository _veiculoRepository;
-        private readonly IClienteRepository _clienteRepository;
+        private readonly IRepository<Cliente> _clienteRepository;
         private readonly IMapper _mapper;
 
       
-        public VeiculoService(IVeiculoRepository veiculoRepository, IClienteRepository clienteRepository)
+        public VeiculoService(IVeiculoRepository veiculoRepository, IRepository<Cliente> clienteRepository,IMapper mapper)
         {
             _veiculoRepository = veiculoRepository;
             _clienteRepository = clienteRepository;
+            _mapper            = mapper;
         }
 
-        public async Task<ResponseBase<Veiculo>> AddVeiculoAsync(VeiculoDto veiculoDto)
+        public async Task<ResponseBase<Veiculo>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
         {
             //IEnumerable<Veiculo> veiculoList = await _veiculoRepository.GetAllAsync();
-            var localizarVeiculo = await _veiculoRepository.GetByPlacaAsync(veiculoDto.VeiculoPlaca) ?? null;
-            if(!await ClienteExists(veiculoDto.ClienteId)) 
-            {
-                return ResponseBase<Veiculo>.FailureResult("Cliente não existe.",HttpStatusCode.NotFound);
-            };
-            if (localizarVeiculo != null)
-            {
-                return ResponseBase<Veiculo>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
-            }
-            var veiculo = _mapper.Map<Veiculo>(veiculoDto);
+            //var localizarVeiculo = await _veiculoRepository.GetByPlacaAsync(veiculoCreateDto.VeiculoPlaca) ?? null;
+            //if(!await ClienteExists(veiculoCreateDto.ClienteId)) 
+            //{
+            //    return ResponseBase<Veiculo>.FailureResult("Cliente não existe.",HttpStatusCode.NotFound);
+            //};
+            //if (localizarVeiculo != null)
+            //{
+            //    return ResponseBase<Veiculo>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
+            //}
+            var veiculo = _mapper.Map<Veiculo>(veiculoCreateDto);
             veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.Trim().ToUpper();
             await _veiculoRepository.AddAsync(veiculo);
             return ResponseBase<Veiculo>.SuccessResult(veiculo,"veiculo cadastrado com sucesso");

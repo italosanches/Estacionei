@@ -20,6 +20,23 @@ namespace Estacionei.Services
 			_clienteRepository = clienteRepository;
 			_mapper = mapper;
 		}
+		public async Task<ResponseBase<IEnumerable<ClienteGetDto>>> GetAllClienteAsync()
+		{
+			var clientes = await _clienteRepository.GetAllAsync();
+			var clientesDto = _mapper.Map<IEnumerable<ClienteGetDto>>(clientes);
+			return ResponseBase<IEnumerable<ClienteGetDto>>.SuccessResult(clientesDto, "Lista de clientes");
+		}
+
+		public async Task<ResponseBase<ClienteGetDto>> GetClienteByIdAsync(int id)
+		{
+			var cliente = await _clienteRepository.GetByIdAsync(id);
+			if (cliente == null)
+			{
+				return ResponseBase<ClienteGetDto>.FailureResult("Cliente não encontrado", HttpStatusCode.NotFound);
+			}
+
+			return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente encontrado");
+		}
 
 		public async Task<ResponseBase<ClienteGetDto>> AddClienteAsync(ClienteCreateDto clienteDto)
 		{
@@ -51,24 +68,7 @@ namespace Estacionei.Services
 
         }
 
-        public async Task<ResponseBase<IEnumerable<ClienteGetDto>>> GetAllClienteAsync()
-		{
-            var clientes = await _clienteRepository.GetAllAsync();
-            var clientesDto = _mapper.Map<IEnumerable<ClienteGetDto>>(clientes);
-            return ResponseBase<IEnumerable<ClienteGetDto>>.SuccessResult(clientesDto, "Lista de clientes");
-        }
-
-		public async Task<ResponseBase<ClienteGetDto>> GetClienteByIdAsync(int id)
-		{
-            var cliente = await _clienteRepository.GetByIdAsync(id);
-            if (cliente == null)
-            {
-                return ResponseBase<ClienteGetDto>.FailureResult("Cliente não encontrado",HttpStatusCode.NotFound);
-            }
-
-            return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente encontrado");
-        }
-
+        
 		private async Task<Cliente> GetCliente(int id)
 		{
 			var cliente = await _clienteRepository.GetByIdAsync(id);
