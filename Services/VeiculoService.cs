@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Estacionei.DTOs;
+using Estacionei.DTOs.Veiculos;
 using Estacionei.Models;
 using Estacionei.Repository.Interfaces;
 using Estacionei.Response;
@@ -21,8 +22,28 @@ namespace Estacionei.Services
             _clienteRepository = clienteRepository;
             _mapper            = mapper;
         }
+		public Task<IEnumerable<Veiculo>> GetAllVeiculoAsync()
+		{
+			throw new NotImplementedException();
+		}
 
-        public async Task<ResponseBase<Veiculo>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
+		public async Task<ResponseBase<VeiculoGetDto>> GetVeiculoByIdAsync(int id)
+		{
+		    var veiculo = await _veiculoRepository.GetByIdAsync(id);
+            if (veiculo == null)
+            {
+                return ResponseBase<VeiculoGetDto>.FailureResult("Veiculo não encontrado.",HttpStatusCode.NotFound);
+            }
+            return ResponseBase<VeiculoGetDto>.SuccessResult(_mapper.Map<VeiculoGetDto>(veiculo),"Veiculo encontrado");
+
+		}
+
+		public Task<Veiculo> GetVeiculoByPlacaAsync(string placa)
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task<ResponseBase<Veiculo>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
         {
             var localizarVeiculo = await _veiculoRepository.FindAsync(x => x.VeiculoPlaca.Trim().ToUpper() == veiculoCreateDto.VeiculoPlaca.Trim().ToUpper());
 			if (localizarVeiculo.Count() > 0)
@@ -41,28 +62,12 @@ namespace Estacionei.Services
             return ResponseBase<Veiculo>.SuccessResult(veiculo, "veiculo cadastrado com sucesso");
 
         }
+		public Task<ResponseBase<bool>> UpdateVeiculoAsync(VeiculoUpdateDto veiculoUpdateDto)
+		{
+			throw new NotImplementedException();
+		}
 
-        public Task DeleteVeiculoAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Veiculo>> GetAllVeiculoAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Veiculo> GetVeiculoByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Veiculo> GetVeiculoByPlacaAsync(string placa)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateVeiculoAsync(Veiculo veiculo)
+        public Task<ResponseBase<bool>> DeleteVeiculoAsync(int id)
         {
             throw new NotImplementedException();
         }
