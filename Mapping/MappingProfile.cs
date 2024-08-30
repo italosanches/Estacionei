@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Estacionei.DTOs;
 using Estacionei.DTOs.Cliente;
+using Estacionei.DTOs.Veiculos;
 using Estacionei.Models;
 
 namespace Estacionei.Mapping
@@ -16,6 +17,9 @@ namespace Estacionei.Mapping
 
 			//Veiculos
 			CreateMap<VeiculoCreateDto, Veiculo>();
+			CreateMap<VeiculoUpdateDto, Veiculo>();
+			CreateMap<Veiculo, VeiculoGetDto>().ForMember(dest => dest.Cliente,opt => opt.MapFrom(src => src.Cliente));
+
 		}
 	}
 }
