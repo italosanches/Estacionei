@@ -38,31 +38,36 @@ namespace Estacionei.Services
 
 		}
 
-		public Task<Veiculo> GetVeiculoByPlacaAsync(string placa)
-		{
-			throw new NotImplementedException();
-		}
-
 		public async Task<ResponseBase<Veiculo>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
         {
-            var localizarVeiculo = await _veiculoRepository.FindAsync(x => x.VeiculoPlaca.Trim().ToUpper() == veiculoCreateDto.VeiculoPlaca.Trim().ToUpper());
-			if (localizarVeiculo.Count() > 0)
+            var localizarVeiculo = await CheckPlate(veiculoCreateDto.VeiculoPlaca);
+
+            if (localizarVeiculo)
 			{
 				return ResponseBase<Veiculo>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
 			}
             var resultCliente = await ClienteExists(veiculoCreateDto.ClienteId);
-			if (!resultCliente)
+            if (!resultCliente)
             {
                 return ResponseBase<Veiculo>.FailureResult("Cliente não existe.", HttpStatusCode.NotFound);
             };
-            
+
             var veiculo = _mapper.Map<Veiculo>(veiculoCreateDto);
             veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.Trim().ToUpper();
             await _veiculoRepository.AddAsync(veiculo);
             return ResponseBase<Veiculo>.SuccessResult(veiculo, "veiculo cadastrado com sucesso");
 
         }
-		public Task<ResponseBase<bool>> UpdateVeiculoAsync(VeiculoUpdateDto veiculoUpdateDto)
+        //Adicionar veiculo ao cadastrar cliente
+        public async Task<ResponseBase<Veiculo>> AddClienteVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
+        {
+            var veiculo = _mapper.Map<Veiculo>(veiculoCreateDto);
+            veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.Trim().ToUpper();
+            await _veiculoRepository.AddAsync(veiculo);
+            return ResponseBase<Veiculo>.SuccessResult(veiculo, "veiculo cadastrado com sucesso");
+
+        }
+        public Task<ResponseBase<bool>> UpdateVeiculoAsync(VeiculoUpdateDto veiculoUpdateDto)
 		{
 			throw new NotImplementedException();
 		}
@@ -71,9 +76,14 @@ namespace Estacionei.Services
         {
             throw new NotImplementedException();
         }
-
-        private async Task<bool> ClienteExists(int id)
+        public async Task<bool> CheckPlate(string placa)
         {
+            var listVeiculo = await _veiculoRepository.FindAsync(x => x.VeiculoPlaca == placa.ToUpper());
+
+            return listVeiculo.Count() > 0;
+        }
+        private async Task<bool> ClienteExists(int id)
+        { 
            var cliente = await _clienteRepository.GetByIdAsync(id);
 
             return cliente != null;
