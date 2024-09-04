@@ -19,6 +19,7 @@ namespace Estacionei.Mapping
 			CreateMap<VeiculoCreateDto, Veiculo>();
 			CreateMap<VeiculoUpdateDto, Veiculo>();
 			CreateMap<Veiculo, VeiculoGetDto>().ForMember(dest => dest.Cliente,opt => opt.MapFrom(src => src.Cliente));
+			CreateMap<VeiculoClienteCreateDto, VeiculoCreateDto>();
 
 		}
 	}
