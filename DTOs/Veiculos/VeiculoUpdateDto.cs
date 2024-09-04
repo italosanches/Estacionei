@@ -5,7 +5,10 @@ namespace Estacionei.DTOs.Veiculos
 {
 	public class VeiculoUpdateDto
 	{
-		[Required(ErrorMessage = "É necessário inserir a placa.")]
+		[Required]
+        public int VeiculoId { get; set; }
+
+        [Required(ErrorMessage = "É necessário inserir a placa.")]
 		[Length(1, 15, ErrorMessage = "Placa deve ter entre 1 e 15 caracteres.")]
 		public string VeiculoPlaca { get; set; }
 		[Required]
