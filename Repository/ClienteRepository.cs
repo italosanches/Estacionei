@@ -24,6 +24,8 @@ namespace Estacionei.Repository
 		{
             return await _context.Clientes.AsNoTracking().FirstOrDefaultAsync(x => x.ClienteId == id);
         }
+        //Expression e para usar lambda, a func recebe um cliente e retorna os clientes onde
+        //a condica seja true
 		public async Task<IEnumerable<Cliente>> FindAsync(Expression<Func<Cliente, bool>> predicate)
 		{
 			return await _context.Clientes.AsNoTracking().Where(predicate).ToListAsync();
