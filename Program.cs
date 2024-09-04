@@ -21,8 +21,11 @@ builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IVeiculoRepository,VeiculoRepository>();
 builder.Services.AddScoped<IVeiculoService, VeiculoService>();
-builder.Services.AddAutoMapper(typeof(MappingProfile)); 
-
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
 var app = builder.Build();
 

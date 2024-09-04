@@ -17,12 +17,12 @@ namespace Estacionei.Repository
 
 		public async Task<IEnumerable<Cliente>> GetAllAsync()
 		{
-            return await _context.Clientes.AsNoTracking().ToListAsync();
+            return await _context.Clientes.AsNoTracking().Include(x => x.VeiculosCliente).ToListAsync();
         }
 
         public async Task<Cliente> GetByIdAsync(int id)
 		{
-            return await _context.Clientes.AsNoTracking().FirstOrDefaultAsync(x => x.ClienteId == id);
+            return await _context.Clientes.AsNoTracking().Include(x =>x.VeiculosCliente).FirstOrDefaultAsync(x => x.ClienteId == id);
         }
         //Expression é para usar lambda, a func recebe um cliente e retorna os clientes onde
         //a condicao seja true
