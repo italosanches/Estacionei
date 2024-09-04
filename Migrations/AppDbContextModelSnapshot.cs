@@ -40,7 +40,7 @@ namespace Estacionei.Migrations
 
                     b.HasKey("ClienteId");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Clientes", (string)null);
                 });
 
             modelBuilder.Entity("Estacionei.Models.Veiculo", b =>
@@ -74,7 +74,7 @@ namespace Estacionei.Migrations
                     b.HasIndex("VeiculoPlaca")
                         .IsUnique();
 
-                    b.ToTable("Veiculos");
+                    b.ToTable("Veiculos", (string)null);
                 });
 
             modelBuilder.Entity("Estacionei.Models.Veiculo", b =>
