@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Estacionei.DTOs.Veiculos;
+using System.Text.Json.Serialization;
 
 namespace Estacionei.DTOs.Cliente
 {
@@ -10,5 +11,7 @@ namespace Estacionei.DTOs.Cliente
 
 
         public string ClienteTelefone { get; set; }
+
+        public ICollection<VeiculoGetDto> VeiculosCliente { get; set; }
     }
 }
