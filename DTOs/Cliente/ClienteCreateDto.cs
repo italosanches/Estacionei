@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Estacionei.DTOs.Veiculos;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Estacionei.DTOs.Cliente
@@ -11,8 +12,9 @@ namespace Estacionei.DTOs.Cliente
 
         [Required(ErrorMessage = "O telefone é obrigatório.")]
         [Phone(ErrorMessage = "O telefone deve ser válido.")]
-
         public string ClienteTelefone { get; set; }
+
+        public VeiculoClienteCreateDto? Veiculo { get; set; }
 
     }
 }
