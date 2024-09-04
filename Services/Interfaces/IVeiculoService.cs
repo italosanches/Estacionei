@@ -7,7 +7,7 @@ namespace Estacionei.Services.Interfaces
 {
     public interface IVeiculoService
     {
-        Task<IEnumerable<Veiculo>> GetAllVeiculoAsync();
+        Task<ResponseBase<IEnumerable<VeiculoGetDto>>> GetAllVeiculoAsync();
         Task<ResponseBase<VeiculoGetDto>> GetVeiculoByIdAsync(int id);
         Task<bool> CheckPlate(string placa);
         Task<ResponseBase<Veiculo>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto);
