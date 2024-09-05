@@ -26,7 +26,7 @@ namespace Estacionei.Services
         }
         public async Task<ResponseBase<IEnumerable<ClienteGetDto>>> GetAllClienteAsync()
         {
-            var clientes = await _clienteRepository.GetAllAsync();
+            var clientes = await _clienteRepository.GetAllClienteAndVeiculos();
             var clientesDto = _mapper.Map<IEnumerable<ClienteGetDto>>(clientes);
             return ResponseBase<IEnumerable<ClienteGetDto>>.SuccessResult(clientesDto, "Lista de clientes");
         }
@@ -98,9 +98,9 @@ namespace Estacionei.Services
         }
 
 
-        private async Task<Cliente> GetCliente(int id)
+        private async Task<Cliente> GetCliente(int id) 
         {
-            var cliente = await _clienteRepository.GetAsync(x => x.ClienteId == id);
+            var cliente = await _clienteRepository.GetClienteAndVeiculos(id);
             return cliente;
         }
     }
