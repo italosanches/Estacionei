@@ -15,12 +15,12 @@ namespace Estacionei.Models
 
         [Required(ErrorMessage = "É necessário inserir a placa")]
         [StringLength(15)]
-        public string VeiculoPlaca { get; set; }
+        public string? VeiculoPlaca { get; set; }
 
         [Required]
         [Length(1, 10, ErrorMessage = "Modelo deve conter entre 1 e 10 caracteres")]
         [StringLength(11)]
-        public string VeiculoModelo { get; set; }
+        public required string VeiculoModelo { get; set; }
 
         [Required(ErrorMessage ="Tipo necessario, 1= Carro, 2= Moto e 3=Camionete")]
         public TipoVeiculo TipoVeiculo { get; set; }
