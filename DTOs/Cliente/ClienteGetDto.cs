@@ -12,6 +12,6 @@ namespace Estacionei.DTOs.Cliente
 
         public string ClienteTelefone { get; set; }
 
-        public ICollection<VeiculoGetDto> VeiculosCliente { get; set; }
+        public ICollection<VeiculoGetDto>? VeiculosCliente { get; set; }
     }
 }
