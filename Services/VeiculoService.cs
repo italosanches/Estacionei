@@ -39,7 +39,7 @@ namespace Estacionei.Services
 
         public async Task<ResponseBase<VeiculoGetDto>> GetVeiculoByIdAsync(int id)
         {
-            var veiculo = await _veiculoRepository.GetByIdAsync(id);
+            var veiculo = await _veiculoRepository.GetAsync(x=> x.VeiculoId == id);
             if (veiculo == null)
             {
                 return ResponseBase<VeiculoGetDto>.FailureResult("Veiculo não encontrado.", HttpStatusCode.NotFound);
@@ -97,7 +97,7 @@ namespace Estacionei.Services
 
         public async Task<ResponseBase<bool>> DeleteVeiculoAsync(int id)
         {
-            var veiculo = await _veiculoRepository.GetByIdAsync(id);
+            var veiculo = await _veiculoRepository.GetAsync(x => x.VeiculoId == id);
             if (veiculo != null)
             {
                 await _veiculoRepository.DeleteAsync(veiculo);
@@ -114,8 +114,7 @@ namespace Estacionei.Services
         }
         private async Task<bool> ClienteExists(int id)
         {
-            var cliente = await _clienteRepository.GetByIdAsync(id);
-
+            var cliente = await _clienteRepository.GetAsync(x => x.ClienteId == id);
             return cliente != null;
         }
     }

@@ -14,14 +14,15 @@ namespace Estacionei.Services
     public class ClienteService : IClienteService
     {
         private readonly IClienteRepository _clienteRepository;
+        //private readonly IRepository<Cliente> _repository;
         private readonly IVeiculoService _veiculoService;
         private readonly IMapper _mapper;
 
         public ClienteService(IClienteRepository clienteRepository, IMapper mapper, IVeiculoService veiculoService)
         {
             _clienteRepository = clienteRepository;
-            _mapper = mapper;
             _veiculoService = veiculoService;
+            _mapper = mapper;
         }
         public async Task<ResponseBase<IEnumerable<ClienteGetDto>>> GetAllClienteAsync()
         {
@@ -99,7 +100,7 @@ namespace Estacionei.Services
 
         private async Task<Cliente> GetCliente(int id)
         {
-            var cliente = await _clienteRepository.GetByIdAsync(id);
+            var cliente = await _clienteRepository.GetAsync(x => x.ClienteId == id);
             return cliente;
         }
     }
