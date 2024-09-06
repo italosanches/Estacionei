@@ -1,7 +1,7 @@
 ﻿using Estacionei.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace Estacionei.DTOs.Veiculos
+namespace Estacionei.DTOs.ClienteVeiculo
 {
     public class VeiculoClienteCreateDto
     {
@@ -13,6 +13,6 @@ namespace Estacionei.DTOs.Veiculos
         public required string VeiculoModelo { get; set; }
         [Required(ErrorMessage = "Tipo necessario, 1= Carro, 2= Moto e 3=Camionete.")]
         public TipoVeiculo TipoVeiculo { get; set; }
-        
+
     }
 }

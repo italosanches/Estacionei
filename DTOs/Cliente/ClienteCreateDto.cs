@@ -1,4 +1,4 @@
-﻿using Estacionei.DTOs.Veiculos;
+﻿using Estacionei.DTOs.ClienteVeiculo;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
