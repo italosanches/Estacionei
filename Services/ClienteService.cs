@@ -54,8 +54,8 @@ namespace Estacionei.Services
             else
             {
                 var veiculo = _mapper.Map<VeiculoCreateDto>(clienteDto.Veiculo);
-                var checkPlate = await _veiculoService.CheckPlate(veiculo.VeiculoPlaca);
-                if (checkPlate)
+                var veiculoExist = await _veiculoService.CheckPlate(veiculo.VeiculoPlaca);
+                if (veiculoExist)
                 {
                     return ResponseBase<ClienteGetDto>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
                 }

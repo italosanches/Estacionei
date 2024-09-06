@@ -32,14 +32,14 @@ namespace Estacionei.Services
             }
             else
             {
-                return ResponseBase<IEnumerable<VeiculoGetDto>>.FailureResult("não há veiculos cadastrados", HttpStatusCode.NotFound);
+                return ResponseBase<IEnumerable<VeiculoGetDto>>.FailureResult("Não há veiculos cadastrados", HttpStatusCode.NotFound);
             }
 
         }
 
         public async Task<ResponseBase<VeiculoGetDto>> GetVeiculoByIdAsync(int id)
         {
-            var veiculo = await _veiculoRepository.GetAsync(x=> x.VeiculoId == id);
+            var veiculo = await _veiculoRepository.GetAsync(x => x.VeiculoId == id);
             if (veiculo == null)
             {
                 return ResponseBase<VeiculoGetDto>.FailureResult("Veiculo não encontrado.", HttpStatusCode.NotFound);
@@ -47,48 +47,42 @@ namespace Estacionei.Services
             return ResponseBase<VeiculoGetDto>.SuccessResult(_mapper.Map<VeiculoGetDto>(veiculo), "Veiculo encontrado");
 
         }
-
-        public async Task<ResponseBase<Veiculo>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
+      
+        public async Task<ResponseBase<VeiculoGetDto>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
         {
-            var localizarVeiculo = await CheckPlate(veiculoCreateDto.VeiculoPlaca);
+            var veiculoExists = await CheckPlate(veiculoCreateDto.VeiculoPlaca);
 
-            if (localizarVeiculo)
+            if (veiculoExists)
             {
-                return ResponseBase<Veiculo>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
+                return ResponseBase<VeiculoGetDto>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
             }
             var resultCliente = await ClienteExists(veiculoCreateDto.ClienteId);
             if (!resultCliente)
             {
-                return ResponseBase<Veiculo>.FailureResult("Cliente não existe.", HttpStatusCode.NotFound);
+                return ResponseBase<VeiculoGetDto>.FailureResult("Cliente não existe.", HttpStatusCode.NotFound);
             };
 
             var veiculo = _mapper.Map<Veiculo>(veiculoCreateDto);
             veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.Trim().ToUpper();
             await _veiculoRepository.AddAsync(veiculo);
-            return ResponseBase<Veiculo>.SuccessResult(veiculo, "veiculo cadastrado com sucesso");
+            return ResponseBase<VeiculoGetDto>.SuccessResult(_mapper.Map<VeiculoGetDto>(veiculo), "veiculo cadastrado com sucesso");
 
         }
         //Adicionar veiculo ao cadastrar cliente
-        public async Task<ResponseBase<Veiculo>> AddClienteVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
+        public async Task<ResponseBase<VeiculoGetDto>> AddClienteVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
         {
             var veiculo = _mapper.Map<Veiculo>(veiculoCreateDto);
             veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.Trim().ToUpper();
             await _veiculoRepository.AddAsync(veiculo);
-            return ResponseBase<Veiculo>.SuccessResult(veiculo, "veiculo cadastrado com sucesso");
+            return ResponseBase<VeiculoGetDto>.SuccessResult(_mapper.Map<VeiculoGetDto>(veiculo), "veiculo cadastrado com sucesso");
 
         }
         public async Task<ResponseBase<bool>> UpdateVeiculoAsync(VeiculoUpdateDto veiculoUpdateDto)
         {
-            var veiculos = await _veiculoRepository.FindAsync(x => x.VeiculoPlaca == veiculoUpdateDto.VeiculoPlaca.ToUpper());
-            if (veiculos.Count() > 0)
+            var veiculoExists = await CheckPlate(veiculoUpdateDto.VeiculoPlaca,veiculoUpdateDto.VeiculoId);
+            if (veiculoExists)
             {
-                foreach (var veiculo in veiculos)
-                {
-                    if (veiculo.VeiculoId != veiculoUpdateDto.VeiculoId)
-                    {
-                        return ResponseBase<bool>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
-                    }
-                }
+                return ResponseBase<bool>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
             }
             await _veiculoRepository.UpdateAsync(_mapper.Map<Veiculo>(veiculoUpdateDto));
             return ResponseBase<bool>.SuccessResult(true, "veiculo atualizado com sucesso");
@@ -108,14 +102,28 @@ namespace Estacionei.Services
         }
         public async Task<bool> CheckPlate(string placa)
         {
-            var listVeiculo = await _veiculoRepository.FindAsync(x => x.VeiculoPlaca == placa.ToUpper());
+            var veiculo = await _veiculoRepository.GetVeiculoByPlaca(placa.ToUpper().Trim());
 
-            return listVeiculo.Count() > 0;
+            return veiculo != null;
+
+        }
+        public async Task<bool> CheckPlate(string placa,int id)
+        {
+            var veiculo = await _veiculoRepository.GetVeiculoByPlaca(placa.ToUpper().Trim());
+            if (veiculo != null && (veiculo.VeiculoId != id))
+            {
+                return true;
+            }
+
+            return false;
+
         }
         private async Task<bool> ClienteExists(int id)
         {
             var cliente = await _clienteRepository.GetAsync(x => x.ClienteId == id);
             return cliente != null;
         }
+
+        
     }
 }

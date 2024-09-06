@@ -10,8 +10,9 @@ namespace Estacionei.Services.Interfaces
         Task<ResponseBase<IEnumerable<VeiculoGetDto>>> GetAllVeiculoAsync();
         Task<ResponseBase<VeiculoGetDto>> GetVeiculoByIdAsync(int id);
         Task<bool> CheckPlate(string placa);
-        Task<ResponseBase<Veiculo>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto);
-        Task<ResponseBase<Veiculo>> AddClienteVeiculoAsync(VeiculoCreateDto veiculoCreateDto);
+        Task<bool> CheckPlate(string placa, int id);
+        Task<ResponseBase<VeiculoGetDto>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto);
+        Task<ResponseBase<VeiculoGetDto>> AddClienteVeiculoAsync(VeiculoCreateDto veiculoCreateDto);
 
         Task<ResponseBase<bool>> UpdateVeiculoAsync(VeiculoUpdateDto veiculoUpdateDto);
         Task<ResponseBase<bool>> DeleteVeiculoAsync(int id);
