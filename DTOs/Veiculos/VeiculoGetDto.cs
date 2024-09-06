@@ -6,12 +6,13 @@ namespace Estacionei.DTOs.Veiculos
 {
 	public class VeiculoGetDto
 	{
-		public string? VeiculoPlaca { get; set; }
+        public int VeiculoId { get; set; }
+        public string? VeiculoPlaca { get; set; }
 		
 		public string? VeiculoModelo { get; set; }
 		
 		public TipoVeiculo TipoVeiculo { get; set; }
 		
-		public ClienteGetDto? Cliente { get; set; }
+		public int ClienteId { get; set; }
 	}
 }
