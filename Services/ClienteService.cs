@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Estacionei.DTOs;
 using Estacionei.DTOs.Cliente;
+using Estacionei.Extensions;
 using Estacionei.Mapping;
 using Estacionei.Models;
 using Estacionei.Repository.Interfaces;
@@ -15,13 +16,13 @@ namespace Estacionei.Services
     {
         private readonly IClienteRepository _clienteRepository;
         //private readonly IRepository<Cliente> _repository;
-        private readonly IVeiculoService _veiculoService;
+        private readonly IVeiculoRepository _veiculoRepository;
         private readonly IMapper _mapper;
 
-        public ClienteService(IClienteRepository clienteRepository, IMapper mapper, IVeiculoService veiculoService)
+        public ClienteService(IClienteRepository clienteRepository, IMapper mapper, IVeiculoRepository veiculoRepository)
         {
             _clienteRepository = clienteRepository;
-            _veiculoService = veiculoService;
+            _veiculoRepository = veiculoRepository;
             _mapper = mapper;
         }
         public async Task<ResponseBase<IEnumerable<ClienteGetDto>>> GetAllClienteAsync()
@@ -53,22 +54,17 @@ namespace Estacionei.Services
             }
             else
             {
-                var veiculo = _mapper.Map<VeiculoCreateDto>(clienteDto.Veiculo);
-                var veiculoExist = await _veiculoService.CheckPlate(veiculo.VeiculoPlaca);
-                if (veiculoExist)
+                var veiculo = _mapper.Map<Veiculo>(clienteDto.Veiculo);
+                var veiculoExist = await _veiculoRepository.GetVeiculoByPlaca(veiculo.VeiculoPlaca.Replace(" ", "").ToUpper().RemoveSpecialCharacters());
+                if (veiculoExist != null)
                 {
                     return ResponseBase<ClienteGetDto>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
                 }
                 await _clienteRepository.AddAsync(cliente);
-                veiculo.ClienteId = cliente.ClienteId;
+                veiculo.ClienteId    = cliente.ClienteId;
+                veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.RemoveSpecialCharacters().Replace(" ", "").ToUpper();
 
-                var resultVeiculo = await _veiculoService.AddClienteVeiculoAsync(veiculo);
-
-                if (!resultVeiculo.Success)
-                {
-                    return ResponseBase<ClienteGetDto>.FailureResult(resultVeiculo.Message ?? string.Empty, HttpStatusCode.BadRequest);
-
-                }
+                await _veiculoRepository.AddAsync(veiculo);
                 return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente cadastrado com sucesso.");
 
             }

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Estacionei.DTOs;
 using Estacionei.DTOs.Veiculos;
+using Estacionei.Extensions;
 using Estacionei.Models;
+using Estacionei.Repository;
 using Estacionei.Repository.Interfaces;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
@@ -47,7 +49,20 @@ namespace Estacionei.Services
             return ResponseBase<VeiculoGetDto>.SuccessResult(_mapper.Map<VeiculoGetDto>(veiculo), "Veiculo encontrado");
 
         }
-      
+
+        public async Task<ResponseBase<VeiculoGetDto>> GetVeiculoByPlacaAsync(string placa)
+        {
+            var veiculo = await _veiculoRepository.GetVeiculoByPlaca(placa.ToUpper().RemoveSpecialCharacters().Replace(" ",""));
+            if (veiculo == null)
+            {
+                return ResponseBase<VeiculoGetDto>.FailureResult("Veiculo não encontrado.", HttpStatusCode.NotFound);
+
+            }
+            return ResponseBase<VeiculoGetDto>.SuccessResult(_mapper.Map<VeiculoGetDto>(veiculo), "Veiculo encontrado");
+
+        }
+
+
         public async Task<ResponseBase<VeiculoGetDto>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
         {
             var veiculoExists = await CheckPlate(veiculoCreateDto.VeiculoPlaca);
@@ -63,7 +78,7 @@ namespace Estacionei.Services
             };
 
             var veiculo = _mapper.Map<Veiculo>(veiculoCreateDto);
-            veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.Trim().ToUpper();
+            veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.Replace(" ","").ToUpper().RemoveSpecialCharacters();
             await _veiculoRepository.AddAsync(veiculo);
             return ResponseBase<VeiculoGetDto>.SuccessResult(_mapper.Map<VeiculoGetDto>(veiculo), "veiculo cadastrado com sucesso");
 
@@ -72,18 +87,25 @@ namespace Estacionei.Services
         public async Task<ResponseBase<VeiculoGetDto>> AddClienteVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
         {
             var veiculo = _mapper.Map<Veiculo>(veiculoCreateDto);
-            veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.Trim().ToUpper();
+            veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.RemoveSpecialCharacters().Replace(" ","").ToUpper();
             await _veiculoRepository.AddAsync(veiculo);
             return ResponseBase<VeiculoGetDto>.SuccessResult(_mapper.Map<VeiculoGetDto>(veiculo), "veiculo cadastrado com sucesso");
 
         }
         public async Task<ResponseBase<bool>> UpdateVeiculoAsync(VeiculoUpdateDto veiculoUpdateDto)
         {
-            var veiculoExists = await CheckPlate(veiculoUpdateDto.VeiculoPlaca,veiculoUpdateDto.VeiculoId);
+            var veiculoExists = await CheckPlate(_mapper.Map<Veiculo>(veiculoUpdateDto));
             if (veiculoExists)
             {
                 return ResponseBase<bool>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
             }
+            var clienteExist = await ClienteExists(veiculoUpdateDto.ClienteId);
+            if(!clienteExist)
+            {
+                return ResponseBase<bool>.FailureResult("Cliente não existe no banco de dados.", HttpStatusCode.BadRequest);
+
+            }
+            veiculoUpdateDto.VeiculoPlaca = veiculoUpdateDto.VeiculoPlaca.RemoveSpecialCharacters();
             await _veiculoRepository.UpdateAsync(_mapper.Map<Veiculo>(veiculoUpdateDto));
             return ResponseBase<bool>.SuccessResult(true, "veiculo atualizado com sucesso");
 
@@ -102,15 +124,15 @@ namespace Estacionei.Services
         }
         public async Task<bool> CheckPlate(string placa)
         {
-            var veiculo = await _veiculoRepository.GetVeiculoByPlaca(placa.ToUpper().Trim());
+            var veiculo = await _veiculoRepository.GetAsync(x => x.VeiculoPlaca == placa.ToUpper().Replace(" ", ""));
 
             return veiculo != null;
 
         }
-        public async Task<bool> CheckPlate(string placa,int id)
+        public async Task<bool> CheckPlate(Veiculo veiculo)
         {
-            var veiculo = await _veiculoRepository.GetVeiculoByPlaca(placa.ToUpper().Trim());
-            if (veiculo != null && (veiculo.VeiculoId != id))
+            var checkVeiculo = await _veiculoRepository.GetAsync(x => x.VeiculoPlaca == veiculo.VeiculoPlaca.ToUpper().Replace(" ", ""));
+            if (checkVeiculo != null && (checkVeiculo.VeiculoId != veiculo.VeiculoId))
             {
                 return true;
             }
@@ -120,7 +142,7 @@ namespace Estacionei.Services
         }
         private async Task<bool> ClienteExists(int id)
         {
-            var cliente = await _clienteRepository.GetAsync(x => x.ClienteId == id);
+            var cliente = await _clienteRepository.GetAsync(x=> x.ClienteId == id);
             return cliente != null;
         }
 

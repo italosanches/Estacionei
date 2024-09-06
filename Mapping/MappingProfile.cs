@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Estacionei.DTOs;
 using Estacionei.DTOs.Cliente;
+using Estacionei.DTOs.ClienteVeiculo;
 using Estacionei.DTOs.Veiculos;
 using Estacionei.Models;
 
@@ -10,8 +11,8 @@ namespace Estacionei.Mapping
 	{
 		public MappingProfile() 
 		{
-			//Cliente
-			CreateMap<ClienteCreateDto, Cliente>();
+		    //Cliente
+            CreateMap<ClienteCreateDto, Cliente>();
 			CreateMap<Cliente, ClienteGetDto>();
 			CreateMap<ClienteUpdateDto, Cliente>();
 
@@ -19,7 +20,10 @@ namespace Estacionei.Mapping
 			CreateMap<VeiculoCreateDto, Veiculo>();
 			CreateMap<VeiculoUpdateDto, Veiculo>();
 			CreateMap<Veiculo, VeiculoGetDto>();
-			CreateMap<VeiculoClienteCreateDto, VeiculoCreateDto>();
+
+			//Veiculos Clientes
+            CreateMap<Veiculo, VeiculoClienteGetDto>();
+            CreateMap<VeiculoClienteCreateDto, Veiculo>();
 
 		}
 	}

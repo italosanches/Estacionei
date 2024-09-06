@@ -16,7 +16,7 @@ namespace Estacionei.Repository
 
         public async Task<Veiculo?> GetVeiculoByPlaca(string placa)
         {
-           return await _context.Veiculos.AsNoTracking().FirstOrDefaultAsync(x => x.VeiculoPlaca == placa.ToUpper());
+           return await _context.Veiculos.AsNoTracking().FirstOrDefaultAsync(x => x.VeiculoPlaca == placa);
         }
     }
 }
