@@ -14,20 +14,22 @@ namespace Estacionei.Services
 {
     public class VeiculoService : IVeiculoService
     {
-        private readonly IVeiculoRepository _veiculoRepository;
-        private readonly IClienteRepository _clienteRepository;
+        //private readonly IVeiculoRepository _veiculoRepository;
+        //private readonly IClienteRepository _clienteRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
 
-        public VeiculoService(IVeiculoRepository veiculoRepository, IClienteRepository clienteRepository, IMapper mapper)
+        public VeiculoService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _veiculoRepository = veiculoRepository;
-            _clienteRepository = clienteRepository;
+            //_veiculoRepository = veiculoRepository;
+            //_clienteRepository = clienteRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
         public async Task<ResponseBase<IEnumerable<VeiculoGetDto>>> GetAllVeiculoAsync()
         {
-            var veiculos = await _veiculoRepository.GetAllAsync();
+            var veiculos = await _unitOfWork.VeiculoRepository.GetAllAsync();
             if (veiculos.Count() > 0)
             {
                 return ResponseBase<IEnumerable<VeiculoGetDto>>.SuccessResult(_mapper.Map<IEnumerable<VeiculoGetDto>>(veiculos), "Lista veiculos", HttpStatusCode.OK);
@@ -41,7 +43,7 @@ namespace Estacionei.Services
 
         public async Task<ResponseBase<VeiculoGetDto>> GetVeiculoByIdAsync(int id)
         {
-            var veiculo = await _veiculoRepository.GetAsync(x => x.VeiculoId == id);
+            var veiculo = await _unitOfWork.VeiculoRepository.GetAsync(x => x.VeiculoId == id);
             if (veiculo == null)
             {
                 return ResponseBase<VeiculoGetDto>.FailureResult("Veiculo não encontrado.", HttpStatusCode.NotFound);
@@ -52,7 +54,7 @@ namespace Estacionei.Services
 
         public async Task<ResponseBase<VeiculoGetDto>> GetVeiculoByPlacaAsync(string placa)
         {
-            var veiculo = await _veiculoRepository.GetVeiculoByPlaca(placa.ToUpper().RemoveSpecialCharacters().Replace(" ",""));
+            var veiculo = await _unitOfWork.VeiculoRepository.GetVeiculoByPlaca(placa.ToUpper().RemoveSpecialCharacters().Replace(" ",""));
             if (veiculo == null)
             {
                 return ResponseBase<VeiculoGetDto>.FailureResult("Veiculo não encontrado.", HttpStatusCode.NotFound);
@@ -79,7 +81,9 @@ namespace Estacionei.Services
 
             var veiculo = _mapper.Map<Veiculo>(veiculoCreateDto);
             veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.Replace(" ","").ToUpper().RemoveSpecialCharacters();
-            await _veiculoRepository.AddAsync(veiculo);
+            await _unitOfWork.VeiculoRepository.AddAsync(veiculo);
+            await _unitOfWork.Commit();
+            await _unitOfWork.Dispose();
             return ResponseBase<VeiculoGetDto>.SuccessResult(_mapper.Map<VeiculoGetDto>(veiculo), "veiculo cadastrado com sucesso");
 
         }
@@ -88,7 +92,9 @@ namespace Estacionei.Services
         {
             var veiculo = _mapper.Map<Veiculo>(veiculoCreateDto);
             veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.RemoveSpecialCharacters().Replace(" ","").ToUpper();
-            await _veiculoRepository.AddAsync(veiculo);
+            await _unitOfWork.VeiculoRepository.AddAsync(veiculo);
+            await _unitOfWork.Commit();
+            await _unitOfWork.Dispose();
             return ResponseBase<VeiculoGetDto>.SuccessResult(_mapper.Map<VeiculoGetDto>(veiculo), "veiculo cadastrado com sucesso");
 
         }
@@ -106,17 +112,21 @@ namespace Estacionei.Services
 
             }
             veiculoUpdateDto.VeiculoPlaca = veiculoUpdateDto.VeiculoPlaca.RemoveSpecialCharacters();
-            await _veiculoRepository.UpdateAsync(_mapper.Map<Veiculo>(veiculoUpdateDto));
+            await _unitOfWork.VeiculoRepository.UpdateAsync(_mapper.Map<Veiculo>(veiculoUpdateDto));
+            await _unitOfWork.Commit();
+            await _unitOfWork.Dispose();
             return ResponseBase<bool>.SuccessResult(true, "veiculo atualizado com sucesso");
 
         }
 
         public async Task<ResponseBase<bool>> DeleteVeiculoAsync(int id)
         {
-            var veiculo = await _veiculoRepository.GetAsync(x => x.VeiculoId == id);
+            var veiculo = await _unitOfWork.VeiculoRepository.GetAsync(x => x.VeiculoId == id);
             if (veiculo != null)
             {
-                await _veiculoRepository.DeleteAsync(veiculo);
+                await _unitOfWork.VeiculoRepository.DeleteAsync(veiculo);
+                await _unitOfWork.Commit();
+                await _unitOfWork.Dispose();
                 return ResponseBase<bool>.SuccessResult(true, "Veiculo removido", HttpStatusCode.OK);
             }
             return ResponseBase<bool>.FailureResult("Veiculo nao existe no banco de dados", HttpStatusCode.BadRequest);
@@ -124,14 +134,14 @@ namespace Estacionei.Services
         }
         public async Task<bool> CheckPlate(string placa)
         {
-            var veiculo = await _veiculoRepository.GetAsync(x => x.VeiculoPlaca == placa.ToUpper().Replace(" ", ""));
+            var veiculo = await _unitOfWork.VeiculoRepository.GetAsync(x => x.VeiculoPlaca == placa.ToUpper().Replace(" ", ""));
 
             return veiculo != null;
 
         }
         public async Task<bool> CheckPlate(Veiculo veiculo)
         {
-            var checkVeiculo = await _veiculoRepository.GetAsync(x => x.VeiculoPlaca == veiculo.VeiculoPlaca.ToUpper().Replace(" ", ""));
+            var checkVeiculo = await _unitOfWork.VeiculoRepository.GetAsync(x => x.VeiculoPlaca == veiculo.VeiculoPlaca.ToUpper().Replace(" ", ""));
             if (checkVeiculo != null && (checkVeiculo.VeiculoId != veiculo.VeiculoId))
             {
                 return true;
@@ -142,7 +152,7 @@ namespace Estacionei.Services
         }
         private async Task<bool> ClienteExists(int id)
         {
-            var cliente = await _clienteRepository.GetAsync(x=> x.ClienteId == id);
+            var cliente = await _unitOfWork.ClienteRepository.GetAsync(x=> x.ClienteId == id);
             return cliente != null;
         }
 

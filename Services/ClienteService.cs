@@ -4,6 +4,7 @@ using Estacionei.DTOs.Cliente;
 using Estacionei.Extensions;
 using Estacionei.Mapping;
 using Estacionei.Models;
+using Estacionei.Repository;
 using Estacionei.Repository.Interfaces;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
@@ -14,20 +15,20 @@ namespace Estacionei.Services
 {
     public class ClienteService : IClienteService
     {
-        private readonly IClienteRepository _clienteRepository;
-        //private readonly IRepository<Cliente> _repository;
-        private readonly IVeiculoRepository _veiculoRepository;
+        //private readonly IClienteRepository _clienteRepository;
+        ////private readonly IRepository<Cliente> _repository;
+        //private readonly IVeiculoRepository _unitOfWork.VeiculoRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ClienteService(IClienteRepository clienteRepository, IMapper mapper, IVeiculoRepository veiculoRepository)
+        public ClienteService(IMapper mapper,IUnitOfWork unitOfWork)
         {
-            _clienteRepository = clienteRepository;
-            _veiculoRepository = veiculoRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
         public async Task<ResponseBase<IEnumerable<ClienteGetDto>>> GetAllClienteAsync()
         {
-            var clientes = await _clienteRepository.GetAllClienteAndVeiculos();
+            var clientes = await _unitOfWork.ClienteRepository.GetAllClienteAndVeiculos();
             var clientesDto = _mapper.Map<IEnumerable<ClienteGetDto>>(clientes);
             return ResponseBase<IEnumerable<ClienteGetDto>>.SuccessResult(clientesDto, "Lista de clientes");
         }
@@ -49,22 +50,29 @@ namespace Estacionei.Services
 
             if (clienteDto.Veiculo == null)
             {
-                await _clienteRepository.AddAsync(cliente);
+                await _unitOfWork.ClienteRepository.AddAsync(cliente);
+                await _unitOfWork.Commit();
+                await _unitOfWork.Dispose();
+
+
                 return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente cadastrado com sucesso.");
             }
             else
             {
                 var veiculo = _mapper.Map<Veiculo>(clienteDto.Veiculo);
-                var veiculoExist = await _veiculoRepository.GetVeiculoByPlaca(veiculo.VeiculoPlaca.Replace(" ", "").ToUpper().RemoveSpecialCharacters());
+                var veiculoExist = await _unitOfWork.VeiculoRepository.GetVeiculoByPlaca(veiculo.VeiculoPlaca.Replace(" ", "").ToUpper().RemoveSpecialCharacters());
                 if (veiculoExist != null)
                 {
                     return ResponseBase<ClienteGetDto>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
                 }
-                await _clienteRepository.AddAsync(cliente);
-                veiculo.ClienteId    = cliente.ClienteId;
+                await _unitOfWork.ClienteRepository.AddAsync(cliente);
+                await _unitOfWork.Commit();
+                veiculo.ClienteId = cliente.ClienteId;
                 veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.RemoveSpecialCharacters().Replace(" ", "").ToUpper();
 
-                await _veiculoRepository.AddAsync(veiculo);
+                await _unitOfWork.VeiculoRepository.AddAsync(veiculo);
+                await _unitOfWork.Commit();
+                await _unitOfWork.Dispose();
                 return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente cadastrado com sucesso.");
 
             }
@@ -77,7 +85,9 @@ namespace Estacionei.Services
             {
                 return ResponseBase<bool>.FailureResult("Cliente não encontrado.", HttpStatusCode.NotFound);
             }
-            await _clienteRepository.UpdateAsync(_mapper.Map<Cliente>(clienteDto));
+            await _unitOfWork.ClienteRepository.UpdateAsync(_mapper.Map<Cliente>(clienteDto));
+            await _unitOfWork.Commit();
+            await _unitOfWork.Dispose();
             return ResponseBase<bool>.SuccessResult(true, "Cliente atualizado com sucesso.");
         }
         public async Task<ResponseBase<bool>> DeleteClienteAsync(int id)
@@ -87,16 +97,18 @@ namespace Estacionei.Services
             {
                 return ResponseBase<bool>.FailureResult("Cliente não encontrado.", HttpStatusCode.NotFound);
             }
-            await _clienteRepository.DeleteAsync(cliente);
+            await _unitOfWork.ClienteRepository.DeleteAsync(cliente);
+            await _unitOfWork.Commit();
+            await _unitOfWork.Dispose();
             return ResponseBase<bool>.SuccessResult(true, "Cliente deletado com sucesso.");
 
 
         }
 
 
-        private async Task<Cliente> GetCliente(int id) 
+        private async Task<Cliente> GetCliente(int id)
         {
-            var cliente = await _clienteRepository.GetClienteAndVeiculos(id);
+            var cliente = await _unitOfWork.ClienteRepository.GetClienteAndVeiculos(id);
             return cliente;
         }
     }
