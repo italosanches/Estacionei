@@ -7,6 +7,8 @@ namespace Estacionei.Repository
         IClienteRepository ClienteRepository { get; }
         IVeiculoRepository VeiculoRepository { get; }
 
+        IConfiguracaoValorHoraRepository configuracaoValorHoraRepository { get; }
+
         Task Commit();
         Task Dispose();
     }

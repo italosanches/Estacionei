@@ -7,6 +7,7 @@ namespace Estacionei.Repository
     {
         private IClienteRepository clienteRepo;
         private IVeiculoRepository veiculoRepo;
+        private IConfiguracaoValorHoraRepository configuracaoValorHoraRepo;
 
         public AppDbContext _context;
 
@@ -23,7 +24,12 @@ namespace Estacionei.Repository
         public IVeiculoRepository VeiculoRepository
         {
             get { return veiculoRepo = veiculoRepo ??  new VeiculoRepository(_context); }
-        } 
+        }
+
+        public IConfiguracaoValorHoraRepository configuracaoValorHoraRepository
+        {
+            get { return configuracaoValorHoraRepo = configuracaoValorHoraRepo ?? new ConfiguracaoValorHoraRepository(_context); }
+        }
 
         public async Task Commit()
         {
