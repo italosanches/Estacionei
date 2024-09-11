@@ -22,8 +22,6 @@ builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IVeiculoRepository,VeiculoRepository>();
 builder.Services.AddScoped<IVeiculoService, VeiculoService>();
-builder.Services.AddScoped<IConfiguracaoValorHoraRepository, ConfiguracaoValorHoraRepository>();
-builder.Services.AddScoped<IConfiguracaoValorHoraService, ConfiguracaoValorHoraService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddControllersWithViews()

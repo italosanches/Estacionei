@@ -2,7 +2,6 @@
 using Estacionei.DTOs;
 using Estacionei.DTOs.Cliente;
 using Estacionei.DTOs.ClienteVeiculo;
-using Estacionei.DTOs.ConfiguracaoValorHora;
 using Estacionei.DTOs.Veiculos;
 using Estacionei.Models;
 
@@ -25,12 +24,6 @@ namespace Estacionei.Mapping
 			//Veiculos Clientes
             CreateMap<Veiculo, VeiculoClienteGetDto>();
             CreateMap<VeiculoClienteCreateDto, Veiculo>();
-
-			//Configuracao Valor Hora
-			CreateMap<ConfiguracaoValorHoraCreateDto,ConfiguracaoValorHora>();
-            CreateMap<ConfiguracaoValorHoraUpdateDto, ConfiguracaoValorHora>();
-            CreateMap<ConfiguracaoValorHora,ConfiguracaoValorHoraGetDto>();
-
 
 		}
 	}
