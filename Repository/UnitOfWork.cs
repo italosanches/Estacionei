@@ -5,9 +5,9 @@ namespace Estacionei.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private IClienteRepository clienteRepo;
-        private IVeiculoRepository veiculoRepo;
-        private IConfiguracaoValorHoraRepository configuracaoValorHoraRepo;
+        private IClienteRepository _clienteRepo;
+        private IVeiculoRepository _veiculoRepo;
+        private IConfiguracaoValorHoraRepository _configuracaoValorHoraRepo;
 
         public AppDbContext _context;
 
@@ -18,17 +18,17 @@ namespace Estacionei.Repository
         }
         public IClienteRepository ClienteRepository
         {
-            get { return clienteRepo = clienteRepo ??  new ClienteRepository(_context); }
+            get { return _clienteRepo = _clienteRepo ??  new ClienteRepository(_context); }
         }
 
         public IVeiculoRepository VeiculoRepository
         {
-            get { return veiculoRepo = veiculoRepo ??  new VeiculoRepository(_context); }
+            get { return _veiculoRepo = _veiculoRepo ??  new VeiculoRepository(_context); }
         }
 
-        public IConfiguracaoValorHoraRepository configuracaoValorHoraRepository
+        public IConfiguracaoValorHoraRepository ConfiguracaoValorHoraRepository
         {
-            get { return configuracaoValorHoraRepo = configuracaoValorHoraRepo ?? new ConfiguracaoValorHoraRepository(_context); }
+            get { return _configuracaoValorHoraRepo = _configuracaoValorHoraRepo ?? new ConfiguracaoValorHoraRepository(_context); }
         }
 
         public async Task Commit()
