@@ -1,6 +1,7 @@
 ﻿using Estacionei.DTOs;
 using Estacionei.DTOs.Veiculo;
 using Estacionei.DTOs.Veiculos;
+using Estacionei.Enums;
 using Estacionei.Models;
 using Estacionei.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -87,6 +88,11 @@ namespace Estacionei.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(VeiculoRequestCreateDto veiculoCreateDto)
         {
+            bool validateEnum = Enum.IsDefined(typeof(TipoVeiculo), veiculoCreateDto.TipoVeiculo);
+            if (!validateEnum)
+            {
+                return BadRequest("Tipo do veiculo é invalido");
+            }
             var result = await _veiculoService.AddVeiculoAsync(veiculoCreateDto);
             if (result.Success)
             {
@@ -98,7 +104,12 @@ namespace Estacionei.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, VeiculoRequestUpdateDto veiculoUpdateDto)
         {
-            if(id <= 0)
+            bool validateEnum = Enum.IsDefined(typeof(TipoVeiculo), veiculoUpdateDto.TipoVeiculo);
+            if (!validateEnum)
+            {
+                return BadRequest("Tipo do veiculo é invalido");
+            }
+            if (id <= 0)
             {
                 return BadRequest("ID do veiculo invalido.");
             }

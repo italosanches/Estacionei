@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Estacionei.DTOs.Cliente;
+using Estacionei.Enums;
 using Estacionei.Models;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
@@ -45,6 +46,15 @@ namespace Estacionei.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Create(ClienteRequestCreateDto clientedto)
 		{
+			if (clientedto.Veiculo is not null)
+			{
+                bool validateEnum = Enum.IsDefined(typeof(TipoVeiculo), clientedto.Veiculo.TipoVeiculo);
+                if (!validateEnum)
+                {
+                    return BadRequest("Tipo do veiculo é invalido");
+                }
+
+            }
 			var result = await _clienteService.AddClienteAsync(clientedto);
 			if (result.Success)
 			{
