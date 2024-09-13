@@ -20,7 +20,7 @@ namespace Estacionei.Controllers
 			_clienteService = clienteService;
 		}
 
-		[HttpGet("Clientes")]
+		[HttpGet]
 		public async Task<IActionResult> GetAll()
 		{
 			var result = await _clienteService.GetAllClienteAsync();

@@ -21,7 +21,7 @@ namespace Estacionei.Controllers
         {
             _veiculoService = veiculoService;
         }
-        [HttpGet("Veiculos")]
+        [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
             var result = await _veiculoService.GetAllVeiculoAsync();
@@ -56,6 +56,24 @@ namespace Estacionei.Controllers
                 return BadRequest("Placa invalida, a placa deve conter apenas letras e numeros!");
             }
             var result = await _veiculoService.GetVeiculoByPlacaAsync(placa);
+            if (result.Success)
+            {
+                return StatusCode((int)result.StatusCode, result.Data);
+            }
+            else
+            {
+                return StatusCode((int)result.StatusCode, result.Message);
+            }
+        }
+
+        [HttpGet("cliente/{id:int}")]
+        public async Task<IActionResult> GetByCliente(int id)
+        {
+            if(id <=0)
+            {
+                return BadRequest("ID cliente invalido");
+            }
+            var result = await _veiculoService.GetAllVeiculoByClienteAsync(id);
             if (result.Success)
             {
                 return StatusCode((int)result.StatusCode, result.Data);
