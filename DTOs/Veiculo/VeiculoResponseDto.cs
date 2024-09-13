@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Estacionei.DTOs.Veiculos
 {
-	public class VeiculoGetDto
+	public class VeiculoResponseDto
 	{
         public int VeiculoId { get; set; }
         public string? VeiculoPlaca { get; set; }

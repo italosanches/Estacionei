@@ -21,7 +21,7 @@ namespace Estacionei.Mapping
 			//Veiculos
 			CreateMap<VeiculoRequestCreateDto, Veiculo>();
 			CreateMap<VeiculoRequestUpdateDto, Veiculo>();
-			CreateMap<Veiculo, VeiculoGetDto>();
+			CreateMap<Veiculo, VeiculoResponseDto>();
 
 			//Veiculos Clientes
             
