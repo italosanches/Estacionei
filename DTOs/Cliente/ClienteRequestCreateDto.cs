@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Estacionei.DTOs.Cliente
 {
-    public class ClienteCreateDto
+    public class ClienteRequestCreateDto
     {
         [Required(ErrorMessage = "Nome é obrigatorio")]
         [StringLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres.")]
@@ -14,7 +14,7 @@ namespace Estacionei.DTOs.Cliente
         [Phone(ErrorMessage = "O telefone deve ser válido.")]
         public string ClienteTelefone { get; set; }
 
-        public VeiculoClienteCreateDto? Veiculo { get; set; }
+        public VeiculoClienteDto? Veiculo { get; set; }
 
     }
 }

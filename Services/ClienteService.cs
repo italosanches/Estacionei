@@ -26,25 +26,25 @@ namespace Estacionei.Services
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
-        public async Task<ResponseBase<IEnumerable<ClienteGetDto>>> GetAllClienteAsync()
+        public async Task<ResponseBase<IEnumerable<ClienteResponseDto>>> GetAllClienteAsync()
         {
             var clientes = await _unitOfWork.ClienteRepository.GetAllClienteAndVeiculos();
-            var clientesDto = _mapper.Map<IEnumerable<ClienteGetDto>>(clientes);
-            return ResponseBase<IEnumerable<ClienteGetDto>>.SuccessResult(clientesDto, "Lista de clientes");
+            var clientesDto = _mapper.Map<IEnumerable<ClienteResponseDto>>(clientes);
+            return ResponseBase<IEnumerable<ClienteResponseDto>>.SuccessResult(clientesDto, "Lista de clientes");
         }
 
-        public async Task<ResponseBase<ClienteGetDto>> GetClienteByIdAsync(int id)
+        public async Task<ResponseBase<ClienteResponseDto>> GetClienteByIdAsync(int id)
         {
             var cliente = await GetCliente(id);
             if (cliente == null)
             {
-                return ResponseBase<ClienteGetDto>.FailureResult("Cliente não encontrado", HttpStatusCode.NotFound);
+                return ResponseBase<ClienteResponseDto>.FailureResult("Cliente não encontrado", HttpStatusCode.NotFound);
             }
 
-            return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente encontrado");
+            return ResponseBase<ClienteResponseDto>.SuccessResult(_mapper.Map<ClienteResponseDto>(cliente), "Cliente encontrado");
         }
 
-        public async Task<ResponseBase<ClienteGetDto>> AddClienteAsync(ClienteCreateDto clienteDto)
+        public async Task<ResponseBase<ClienteResponseDto>> AddClienteAsync(ClienteRequestCreateDto clienteDto)
         {
             var cliente = _mapper.Map<Cliente>(clienteDto);
 
@@ -55,7 +55,7 @@ namespace Estacionei.Services
                 await _unitOfWork.Dispose();
 
 
-                return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente cadastrado com sucesso.");
+                return ResponseBase<ClienteResponseDto>.SuccessResult(_mapper.Map<ClienteResponseDto>(cliente), "Cliente cadastrado com sucesso.");
             }
             else
             {
@@ -63,7 +63,7 @@ namespace Estacionei.Services
                 var veiculoExist = await _unitOfWork.VeiculoRepository.GetVeiculoByPlaca(veiculo.VeiculoPlaca.Replace(" ", "").ToUpper().RemoveSpecialCharacters());
                 if (veiculoExist != null)
                 {
-                    return ResponseBase<ClienteGetDto>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
+                    return ResponseBase<ClienteResponseDto>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);
                 }
                 await _unitOfWork.ClienteRepository.AddAsync(cliente);
                 await _unitOfWork.Commit();
@@ -73,12 +73,12 @@ namespace Estacionei.Services
                 await _unitOfWork.VeiculoRepository.AddAsync(veiculo);
                 await _unitOfWork.Commit();
                 await _unitOfWork.Dispose();
-                return ResponseBase<ClienteGetDto>.SuccessResult(_mapper.Map<ClienteGetDto>(cliente), "Cliente cadastrado com sucesso.");
+                return ResponseBase<ClienteResponseDto>.SuccessResult(_mapper.Map<ClienteResponseDto>(cliente), "Cliente cadastrado com sucesso.");
 
             }
         }
 
-        public async Task<ResponseBase<bool>> UpdateClienteAsync(ClienteUpdateDto clienteDto)
+        public async Task<ResponseBase<bool>> UpdateClienteAsync(ClienteRequestUpdateDto clienteDto)
         {
             var cliente = await GetCliente(clienteDto.ClienteId);
             if (cliente == null)

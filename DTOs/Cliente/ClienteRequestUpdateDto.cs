@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Estacionei.DTOs.Cliente
 {
-	public class ClienteUpdateDto
-	{
-		[Required]
+	public class ClienteRequestUpdateDto
+    {
+		[JsonIgnore]
 		public int ClienteId { get; set; }
 
 		[Required(ErrorMessage = "Nome é obrigatorio")]

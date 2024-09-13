@@ -1,4 +1,5 @@
 ﻿using Estacionei.DTOs;
+using Estacionei.DTOs.Veiculo;
 using Estacionei.DTOs.Veiculos;
 using Estacionei.Models;
 using Estacionei.Response;
@@ -13,10 +14,10 @@ namespace Estacionei.Services.Interfaces
 
         Task<bool> CheckPlate(string placa);
         Task<bool> CheckPlate(Veiculo veiculo);
-        Task<ResponseBase<VeiculoGetDto>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto);
-        Task<ResponseBase<VeiculoGetDto>> AddClienteVeiculoAsync(VeiculoCreateDto veiculoCreateDto);
+        Task<ResponseBase<VeiculoGetDto>> AddVeiculoAsync(VeiculoRequestCreateDto veiculoCreateDto);
+        Task<ResponseBase<VeiculoGetDto>> AddClienteVeiculoAsync(VeiculoRequestCreateDto veiculoCreateDto);
 
-        Task<ResponseBase<bool>> UpdateVeiculoAsync(VeiculoUpdateDto veiculoUpdateDto);
+        Task<ResponseBase<bool>> UpdateVeiculoAsync(VeiculoRequestUpdateDto veiculoUpdateDto);
         Task<ResponseBase<bool>> DeleteVeiculoAsync(int id);
     }
 }

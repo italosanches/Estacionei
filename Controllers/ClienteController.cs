@@ -43,7 +43,7 @@ namespace Estacionei.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(ClienteCreateDto clientedto)
+		public async Task<IActionResult> Create(ClienteRequestCreateDto clientedto)
 		{
 			var result = await _clienteService.AddClienteAsync(clientedto);
 			if (result.Success)
@@ -57,10 +57,14 @@ namespace Estacionei.Controllers
 
 		}
 
-		[HttpPut]
-		public async Task<IActionResult> Update(ClienteUpdateDto clientedto)
+		[HttpPut("{id:int}")]
+		public async Task<IActionResult> Update(int id,ClienteRequestUpdateDto clientedto)
 		{
-			
+			if(id <= 0)
+			{
+				return BadRequest("ID invalido");
+			}
+			clientedto.ClienteId = id;
 			var result = await _clienteService.UpdateClienteAsync(clientedto);
 			return StatusCode((int)result.StatusCode, result.Message);
 		}

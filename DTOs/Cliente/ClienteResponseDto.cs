@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Estacionei.DTOs.Cliente
 {
-    public class ClienteGetDto
+    public class ClienteResponseDto
     {
         public int ClienteId { get; set; }
 
@@ -13,6 +13,6 @@ namespace Estacionei.DTOs.Cliente
 
         public string ClienteTelefone { get; set; }
 
-        public ICollection<VeiculoClienteGetDto>? VeiculosCliente { get; set; }
+        public ICollection<VeiculoClienteDto>? VeiculosCliente { get; set; }
     }
 }

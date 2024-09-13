@@ -1,4 +1,5 @@
 ﻿using Estacionei.DTOs;
+using Estacionei.DTOs.Veiculo;
 using Estacionei.DTOs.Veiculos;
 using Estacionei.Models;
 using Estacionei.Services.Interfaces;
@@ -66,7 +67,7 @@ namespace Estacionei.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(VeiculoCreateDto veiculoCreateDto)
+        public async Task<IActionResult> Create(VeiculoRequestCreateDto veiculoCreateDto)
         {
             var result = await _veiculoService.AddVeiculoAsync(veiculoCreateDto);
             if (result.Success)
@@ -76,15 +77,24 @@ namespace Estacionei.Controllers
             return StatusCode((int)result.StatusCode, result.Message);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update(VeiculoUpdateDto veiculoUpdateDto)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, VeiculoRequestUpdateDto veiculoUpdateDto)
         {
+            if(id <= 0)
+            {
+                return BadRequest("ID do veiculo invalido.");
+            }
+            veiculoUpdateDto.VeiculoId = id;
             var result = await _veiculoService.UpdateVeiculoAsync(veiculoUpdateDto);
             return StatusCode((int)result.StatusCode, result.Message);
         }
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delet(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            if (id <= 0)
+            {
+                return BadRequest("ID do veiculo invalido.");
+            }
             var result = await _veiculoService.DeleteVeiculoAsync(id);
             return StatusCode((int)result.StatusCode, result.Message);
         }

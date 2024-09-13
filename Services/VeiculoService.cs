@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Estacionei.DTOs;
+using Estacionei.DTOs.Veiculo;
 using Estacionei.DTOs.Veiculos;
 using Estacionei.Extensions;
 using Estacionei.Models;
@@ -65,7 +66,7 @@ namespace Estacionei.Services
         }
 
 
-        public async Task<ResponseBase<VeiculoGetDto>> AddVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
+        public async Task<ResponseBase<VeiculoGetDto>> AddVeiculoAsync(VeiculoRequestCreateDto veiculoCreateDto)
         {
             var veiculoExists = await CheckPlate(veiculoCreateDto.VeiculoPlaca);
 
@@ -88,7 +89,7 @@ namespace Estacionei.Services
 
         }
         //Adicionar veiculo ao cadastrar cliente
-        public async Task<ResponseBase<VeiculoGetDto>> AddClienteVeiculoAsync(VeiculoCreateDto veiculoCreateDto)
+        public async Task<ResponseBase<VeiculoGetDto>> AddClienteVeiculoAsync(VeiculoRequestCreateDto veiculoCreateDto)
         {
             var veiculo = _mapper.Map<Veiculo>(veiculoCreateDto);
             veiculo.VeiculoPlaca = veiculo.VeiculoPlaca.RemoveSpecialCharacters().Replace(" ","").ToUpper();
@@ -98,7 +99,7 @@ namespace Estacionei.Services
             return ResponseBase<VeiculoGetDto>.SuccessResult(_mapper.Map<VeiculoGetDto>(veiculo), "veiculo cadastrado com sucesso");
 
         }
-        public async Task<ResponseBase<bool>> UpdateVeiculoAsync(VeiculoUpdateDto veiculoUpdateDto)
+        public async Task<ResponseBase<bool>> UpdateVeiculoAsync(VeiculoRequestUpdateDto veiculoUpdateDto)
         {
             var veiculoExists = await CheckPlate(_mapper.Map<Veiculo>(veiculoUpdateDto));
             if (veiculoExists)
