@@ -16,7 +16,7 @@ namespace Estacionei.DTOs
 		public TipoVeiculo TipoVeiculo { get; set; }
 		[Required(ErrorMessage = "Id do cliente dono do carro é obrigatorio.")]
 
-		[JsonIgnore]
+		
 		public int ClienteId { get; set; }
 	}
 }

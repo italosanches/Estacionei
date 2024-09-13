@@ -1,6 +1,4 @@
-﻿using Estacionei.Repository.Interfaces;
-
-namespace Estacionei.Repository
+﻿namespace Estacionei.Repository.Interfaces
 {
     public interface IUnitOfWork
     {
