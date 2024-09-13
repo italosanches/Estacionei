@@ -4,7 +4,6 @@ using Estacionei.DTOs.Cliente;
 using Estacionei.Extensions;
 using Estacionei.Mapping;
 using Estacionei.Models;
-using Estacionei.Repository;
 using Estacionei.Repository.Interfaces;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
@@ -60,7 +59,7 @@ namespace Estacionei.Services
             else
             {
                 var veiculo = _mapper.Map<Veiculo>(clienteDto.Veiculo);
-                var veiculoExist = await _unitOfWork.VeiculoRepository.GetVeiculoByPlaca(veiculo.VeiculoPlaca.Replace(" ", "").ToUpper().RemoveSpecialCharacters());
+                var veiculoExist = await _unitOfWork.VeiculoRepository.GetVeiculoByPlacaAsync(veiculo.VeiculoPlaca.Replace(" ", "").ToUpper().RemoveSpecialCharacters());
                 if (veiculoExist != null)
                 {
                     return ResponseBase<ClienteResponseDto>.FailureResult("Placa ja existe no banco de dados.", HttpStatusCode.BadRequest);

@@ -3,7 +3,7 @@ using Azure;
 using Estacionei.DTOs.ConfiguracaoValorHora;
 using Estacionei.Enums;
 using Estacionei.Models;
-using Estacionei.Repository;
+using Estacionei.Repository.Interfaces;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
 using System.Collections.Generic;
