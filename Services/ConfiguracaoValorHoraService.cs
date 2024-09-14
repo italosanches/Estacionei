@@ -41,11 +41,7 @@ namespace Estacionei.Services
         {
             var confs = await _unitOfWork.ConfiguracaoValorHoraRepository.GetAllAsync();
             var confsDto = _mapper.Map<IEnumerable<ConfiguracaoValorHoraGetDto>>(confs);
-            if (confsDto.Count() <= 0)
-            {
-                return ResponseBase<IEnumerable<ConfiguracaoValorHoraGetDto>>.FailureResult("Não há configurações cadastradas.", HttpStatusCode.NotFound);
-            }
-            return ResponseBase<IEnumerable<ConfiguracaoValorHoraGetDto>>.SuccessResult(confsDto, "Configurações encontradas.");
+            return ResponseBase<IEnumerable<ConfiguracaoValorHoraGetDto>>.SuccessResult(confsDto ?? new List<ConfiguracaoValorHoraGetDto>(), "Configurações encontradas.");
         }
 
         public async Task<ResponseBase<ConfiguracaoValorHoraGetDto>> GetById(int id)

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Estacionei.DTOs;
+using Estacionei.DTOs.Cliente;
 using Estacionei.DTOs.Veiculo;
 using Estacionei.DTOs.Veiculos;
 using Estacionei.Extensions;
@@ -7,6 +8,7 @@ using Estacionei.Models;
 using Estacionei.Repository.Interfaces;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
+using System.Collections.Generic;
 using System.Net;
 using System.Numerics;
 
@@ -26,14 +28,8 @@ namespace Estacionei.Services
         public async Task<ResponseBase<IEnumerable<VeiculoResponseDto>>> GetAllVeiculoAsync()
         {
             var veiculos = await _unitOfWork.VeiculoRepository.GetAllAsync();
-            if (veiculos.Count() > 0)
-            {
-                return ResponseBase<IEnumerable<VeiculoResponseDto>>.SuccessResult(_mapper.Map<IEnumerable<VeiculoResponseDto>>(veiculos), "Lista veiculos", HttpStatusCode.OK);
-            }
-            else
-            {
-                return ResponseBase<IEnumerable<VeiculoResponseDto>>.FailureResult("Não há veiculos cadastrados", HttpStatusCode.NotFound);
-            }
+            var veiculosDto = _mapper.Map<IEnumerable<VeiculoResponseDto>>(veiculos);
+            return ResponseBase<IEnumerable<VeiculoResponseDto>>.SuccessResult((veiculosDto ?? new List<VeiculoResponseDto>()), "Lista veiculos", HttpStatusCode.OK);
 
         }
         public async Task<ResponseBase<IEnumerable<VeiculoResponseDto>>> GetAllVeiculoByClienteAsync(int clienteId)

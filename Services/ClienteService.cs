@@ -29,7 +29,7 @@ namespace Estacionei.Services
         {
             var clientes = await _unitOfWork.ClienteRepository.GetAllClienteAndVeiculos();
             var clientesDto = _mapper.Map<IEnumerable<ClienteResponseDto>>(clientes);
-            return ResponseBase<IEnumerable<ClienteResponseDto>>.SuccessResult(clientesDto, "Lista de clientes");
+            return ResponseBase<IEnumerable<ClienteResponseDto>>.SuccessResult(clientesDto ??  new List<ClienteResponseDto>(), "Lista de clientes");
         }
 
         public async Task<ResponseBase<ClienteResponseDto>> GetClienteByIdAsync(int id)
