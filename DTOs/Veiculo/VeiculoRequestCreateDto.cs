@@ -1,4 +1,5 @@
 ﻿using Estacionei.Enums;
+using Estacionei.Validations;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -13,7 +14,8 @@ namespace Estacionei.DTOs
 		[Length(1, 10, ErrorMessage = "Modelo deve conter entre 1 e 10 caracteres.")]
 		public required string VeiculoModelo { get; set; }
 		[Required(ErrorMessage = "Tipo necessario, 1= Carro, 2= Moto e 3=Camionete.")]
-		public TipoVeiculo TipoVeiculo { get; set; }
+        [ValidateEnum(typeof(TipoVeiculo))]
+        public TipoVeiculo TipoVeiculo { get; set; }
 		[Required(ErrorMessage = "Id do cliente dono do carro é obrigatorio.")]
 
 		
