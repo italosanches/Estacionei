@@ -29,6 +29,10 @@ namespace Estacionei.Services
         {
             var veiculos = await _unitOfWork.VeiculoRepository.GetAllAsync();
             var veiculosDto = _mapper.Map<IEnumerable<VeiculoResponseDto>>(veiculos);
+            if(!veiculosDto.Any())
+            {
+                return ResponseBase<IEnumerable<VeiculoResponseDto>>.FailureResult("Não há veiculos cadastrados", HttpStatusCode.NotFound);
+            }
             return ResponseBase<IEnumerable<VeiculoResponseDto>>.SuccessResult((veiculosDto ?? new List<VeiculoResponseDto>()), "Lista veiculos", HttpStatusCode.OK);
 
         }
@@ -41,7 +45,7 @@ namespace Estacionei.Services
             }
             else
             {
-                return ResponseBase<IEnumerable<VeiculoResponseDto>>.FailureResult("Não há veiculos cadastrados", HttpStatusCode.NotFound);
+                return ResponseBase<IEnumerable<VeiculoResponseDto>>.FailureResult("Não há veiculos cadastrados para esse cliente", HttpStatusCode.NotFound);
             }
         }
 

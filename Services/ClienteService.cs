@@ -29,6 +29,11 @@ namespace Estacionei.Services
         {
             var clientes = await _unitOfWork.ClienteRepository.GetAllClienteAndVeiculos();
             var clientesDto = _mapper.Map<IEnumerable<ClienteResponseDto>>(clientes);
+            if (!clientesDto.Any()) 
+            {
+                return ResponseBase<IEnumerable<ClienteResponseDto>>.FailureResult("Não há registros no banco.",HttpStatusCode.NotFound);
+
+            }
             return ResponseBase<IEnumerable<ClienteResponseDto>>.SuccessResult(clientesDto ??  new List<ClienteResponseDto>(), "Lista de clientes");
         }
 
