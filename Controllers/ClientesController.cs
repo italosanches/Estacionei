@@ -12,11 +12,11 @@ namespace Estacionei.Controllers
 {
     [Route("api/[controller]")]
 	[ApiController]
-	public class ClienteController : ControllerBase
+	public class ClientesController : ControllerBase
 	{
 		private readonly IClienteService _clienteService;
 
-		public ClienteController(IClienteService clienteService)
+		public ClientesController(IClienteService clienteService)
 		{
 			_clienteService = clienteService;
 		}

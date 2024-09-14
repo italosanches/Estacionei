@@ -13,12 +13,12 @@ namespace Estacionei.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VeiculoController : ControllerBase
+    public class VeiculosController : ControllerBase
     {
         private readonly IVeiculoService _veiculoService;
 
 
-        public VeiculoController(IVeiculoService veiculoService)
+        public VeiculosController(IVeiculoService veiculoService)
         {
             _veiculoService = veiculoService;
         }

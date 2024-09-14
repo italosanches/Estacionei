@@ -11,12 +11,12 @@ namespace Estacionei.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ConfiguracaoValorHoraController : ControllerBase
+    public class ConfiguracoesValoresHoraController : ControllerBase
     {
         private readonly IConfiguracaoValorHoraService _confValoHoraService;
         private readonly IMapper _mapper;
 
-        public ConfiguracaoValorHoraController(IConfiguracaoValorHoraService confValoHoraService, IMapper mapper)
+        public ConfiguracoesValoresHoraController(IConfiguracaoValorHoraService confValoHoraService, IMapper mapper)
         {
             _confValoHoraService = confValoHoraService;
             _mapper = mapper;
