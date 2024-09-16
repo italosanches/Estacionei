@@ -5,6 +5,8 @@
         IClienteRepository ClienteRepository { get; }
         IVeiculoRepository VeiculoRepository { get; }
 
+        IEntradaRepository EntradaRepository { get; }
+
         IConfiguracaoValorHoraRepository ConfiguracaoValorHoraRepository { get; }
 
         Task Commit();

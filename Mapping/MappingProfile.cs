@@ -3,6 +3,7 @@ using Estacionei.DTOs;
 using Estacionei.DTOs.Cliente;
 using Estacionei.DTOs.ClienteVeiculo;
 using Estacionei.DTOs.ConfiguracaoValorHora;
+using Estacionei.DTOs.Entrada;
 using Estacionei.DTOs.Veiculo;
 using Estacionei.DTOs.Veiculos;
 using Estacionei.Models;
@@ -24,11 +25,7 @@ namespace Estacionei.Mapping
 			CreateMap<Veiculo, VeiculoResponseDto>();
 
 			//Veiculos Clientes
-            
 			CreateMap<VeiculoClienteDto, Veiculo>().ReverseMap();
-
-         
-
 
 
             //Configuracao Valor Hora
@@ -36,6 +33,9 @@ namespace Estacionei.Mapping
             CreateMap<ConfiguracaoValorHoraUpdateDto, ConfiguracaoValorHora>();
             CreateMap<ConfiguracaoValorHora,ConfiguracaoValorHoraGetDto>();
 
+			// Entrada
+			CreateMap<EntradaRequestCreateDto, Entrada>();
+			CreateMap<Entrada, EntradaResponseDto>();
 
 		}
 	}

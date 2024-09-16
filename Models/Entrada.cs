@@ -12,7 +12,7 @@ namespace Estacionei.Models
         public int VeiculoId { get; set; }
         [Required(ErrorMessage ="Data de entrada é obrigatorio.")]
         
-        public DateTime DataEntrada { get; set; }
+        public DateTime? DataEntrada { get; set; }
 
         public StatusEntrada StatusEntrada { get; set; } =  StatusEntrada.Aberto;
 

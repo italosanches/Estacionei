@@ -8,6 +8,7 @@ namespace Estacionei.Repository
         private IClienteRepository _clienteRepo;
         private IVeiculoRepository _veiculoRepo;
         private IConfiguracaoValorHoraRepository _configuracaoValorHoraRepo;
+        private IEntradaRepository _entradaRepo;
 
         public AppDbContext _context;
 
@@ -29,6 +30,11 @@ namespace Estacionei.Repository
         public IConfiguracaoValorHoraRepository ConfiguracaoValorHoraRepository
         {
             get { return _configuracaoValorHoraRepo = _configuracaoValorHoraRepo ?? new ConfiguracaoValorHoraRepository(_context); }
+        }
+
+        public IEntradaRepository EntradaRepository 
+        {
+            get { return _entradaRepo  = _entradaRepo ?? new EntradaRepository(_context); }
         }
 
         public async Task Commit()

@@ -36,6 +36,17 @@ namespace Estacionei.Services
             }
             return ResponseBase<IEnumerable<ClienteResponseDto>>.SuccessResult(clientesDto ??  new List<ClienteResponseDto>(), "Lista de clientes");
         }
+        public async Task<ResponseBase<IEnumerable<ClienteResponseDto>>> GetAllClienteByPaginationAsync()
+        {
+            var clientes = await _unitOfWork.ClienteRepository.GetAllClienteAndVeiculos();
+            var clientesDto = _mapper.Map<IEnumerable<ClienteResponseDto>>(clientes);
+            if (!clientesDto.Any())
+            {
+                return ResponseBase<IEnumerable<ClienteResponseDto>>.FailureResult("Não há registros no banco.", HttpStatusCode.NotFound);
+
+            }
+            return ResponseBase<IEnumerable<ClienteResponseDto>>.SuccessResult(clientesDto ?? new List<ClienteResponseDto>(), "Lista de clientes");
+        }
 
         public async Task<ResponseBase<ClienteResponseDto>> GetClienteByIdAsync(int id)
         {
