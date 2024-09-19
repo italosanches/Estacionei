@@ -4,9 +4,13 @@ using Estacionei.DTOs.Cliente;
 using Estacionei.Extensions;
 using Estacionei.Mapping;
 using Estacionei.Models;
+using Estacionei.Pagination;
+using Estacionei.Pagination.Parameters;
+using Estacionei.Pagination.Parameters.ClienteParameters;
 using Estacionei.Repository.Interfaces;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Reflection.Metadata;
 
@@ -14,29 +18,16 @@ namespace Estacionei.Services
 {
     public class ClienteService : IClienteService
     {
-        //private readonly IClienteRepository _clienteRepository;
-        ////private readonly IRepository<Cliente> _repository;
-        //private readonly IVeiculoRepository _unitOfWork.VeiculoRepository;
+       
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ClienteService(IMapper mapper,IUnitOfWork unitOfWork)
+        public ClienteService(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
         public async Task<ResponseBase<IEnumerable<ClienteResponseDto>>> GetAllClienteAsync()
-        {
-            var clientes = await _unitOfWork.ClienteRepository.GetAllClienteAndVeiculos();
-            var clientesDto = _mapper.Map<IEnumerable<ClienteResponseDto>>(clientes);
-            if (!clientesDto.Any()) 
-            {
-                return ResponseBase<IEnumerable<ClienteResponseDto>>.FailureResult("Não há registros no banco.",HttpStatusCode.NotFound);
-
-            }
-            return ResponseBase<IEnumerable<ClienteResponseDto>>.SuccessResult(clientesDto ??  new List<ClienteResponseDto>(), "Lista de clientes");
-        }
-        public async Task<ResponseBase<IEnumerable<ClienteResponseDto>>> GetAllClienteByPaginationAsync()
         {
             var clientes = await _unitOfWork.ClienteRepository.GetAllClienteAndVeiculos();
             var clientesDto = _mapper.Map<IEnumerable<ClienteResponseDto>>(clientes);
@@ -47,6 +38,21 @@ namespace Estacionei.Services
             }
             return ResponseBase<IEnumerable<ClienteResponseDto>>.SuccessResult(clientesDto ?? new List<ClienteResponseDto>(), "Lista de clientes");
         }
+
+        public async Task<ResponseBase<PagedList<ClienteResponseDto>>> GetAllClienteByPaginationAsync(ClienteQueryParameters queryParameters)
+        {
+            var clientes = _unitOfWork.ClienteRepository.GetAllQueryble().AsNoTracking().Include(cli =>cli.VeiculosCliente).OrderBy(cliente => cliente.ClienteId);
+
+            // Obtém a lista paginada
+            var clientesPaginados = await PaginationService<ClienteResponseDto,Cliente>.GetPagedListAsync(clientes, queryParameters,_mapper);
+            if (clientesPaginados.Count() <= 0)
+            {
+                return ResponseBase<PagedList<ClienteResponseDto>>.FailureResult("Não há registros no banco.", HttpStatusCode.NotFound);
+            }    
+
+            return ResponseBase<PagedList<ClienteResponseDto>>.SuccessResult(clientesPaginados, "Clientes paginados");
+        }
+
 
         public async Task<ResponseBase<ClienteResponseDto>> GetClienteByIdAsync(int id)
         {

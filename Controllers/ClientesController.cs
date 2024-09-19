@@ -2,10 +2,14 @@
 using Estacionei.DTOs.Cliente;
 using Estacionei.Enums;
 using Estacionei.Models;
+using Estacionei.Pagination;
+using Estacionei.Pagination.Parameters;
+using Estacionei.Pagination.Parameters.ClienteParameters;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace Estacionei.Controllers
@@ -22,11 +26,12 @@ namespace Estacionei.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetAll()
+		public async Task<IActionResult> GetAll([FromQuery] ClienteQueryParameters queryParameters)
 		{
-			var result = await _clienteService.GetAllClienteAsync();
-			return StatusCode((int)result.StatusCode, (result.Data));
-		}
+			var resultPaginated = await _clienteService.GetAllClienteByPaginationAsync(queryParameters);
+
+			return GetClientes(resultPaginated);
+        }
 
 		[HttpGet("{id:int}",Name = "GetById")]
 		public async Task<IActionResult> GetById(int id)
@@ -85,5 +90,21 @@ namespace Estacionei.Controllers
 			var result = await _clienteService.DeleteClienteAsync(id);
 			return StatusCode((int)result.StatusCode, result.Message);
 		}
+
+
+		private IActionResult GetClientes (ResponseBase<PagedList<ClienteResponseDto>> resultPaginated)
+		{
+            var metadata = new
+            {
+                resultPaginated.Data.TotalCount,
+                resultPaginated.Data.PageSize,
+                resultPaginated.Data.CurrentPage,
+                resultPaginated.Data.TotalPages,
+                resultPaginated.Data.HasNext,
+                resultPaginated.Data.HasPrevious,
+            };
+            Response.Headers.Append("X-Paginations", JsonConvert.SerializeObject(metadata));
+            return StatusCode((int)resultPaginated.StatusCode, resultPaginated.Data);
+        }
 	}
 }
