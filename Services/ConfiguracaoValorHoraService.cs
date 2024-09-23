@@ -82,7 +82,7 @@ namespace Estacionei.Services
                 return ResponseBase<bool>.FailureResult("Ids divergentes da configuração existente para esse tipo de veiculo.", HttpStatusCode.BadRequest);
 
             }
-            await _unitOfWork.ConfiguracaoValorHoraRepository.UpdateAsync(_mapper.Map<ConfiguracaoValorHora>(confValorHoraUpdateDto));
+            _unitOfWork.ConfiguracaoValorHoraRepository.UpdateAsync(_mapper.Map<ConfiguracaoValorHora>(confValorHoraUpdateDto));
             await _unitOfWork.Commit();
             await _unitOfWork.Dispose();
             return ResponseBase<bool>.SuccessResult(true, "Configuração atualizada.");

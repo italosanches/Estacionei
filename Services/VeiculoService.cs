@@ -116,7 +116,7 @@ namespace Estacionei.Services
 
             }
             veiculoUpdateDto.VeiculoPlaca = veiculoUpdateDto.VeiculoPlaca.RemoveSpecialCharacters();
-            await _unitOfWork.VeiculoRepository.UpdateAsync(_mapper.Map<Veiculo>(veiculoUpdateDto));
+            _unitOfWork.VeiculoRepository.UpdateAsync(_mapper.Map<Veiculo>(veiculoUpdateDto));
             await _unitOfWork.Commit();
             await _unitOfWork.Dispose();
             return ResponseBase<bool>.SuccessResult(true, "veiculo atualizado com sucesso");
@@ -128,7 +128,7 @@ namespace Estacionei.Services
             var veiculo = await _unitOfWork.VeiculoRepository.GetAsync(x => x.VeiculoId == id);
             if (veiculo != null)
             {
-                await _unitOfWork.VeiculoRepository.DeleteAsync(veiculo);
+                _unitOfWork.VeiculoRepository.DeleteAsync(veiculo);
                 await _unitOfWork.Commit();
                 await _unitOfWork.Dispose();
                 return ResponseBase<bool>.SuccessResult(true, "Veiculo removido", HttpStatusCode.OK);

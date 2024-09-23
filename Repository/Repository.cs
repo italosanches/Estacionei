@@ -18,6 +18,10 @@ namespace Estacionei.Repository
             return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(predicate);
         }
 
+        public IQueryable<T> GetAllQueryable()
+        {
+            return _context.Set<T>().AsNoTracking().AsQueryable();
+        }
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
         {
             return await _context.Set<T>().AsNoTracking().Where(predicate).ToListAsync();
@@ -35,14 +39,14 @@ namespace Estacionei.Repository
             return entity;
         }
 
-        public async Task<T> DeleteAsync(T entity)
+        public  T DeleteAsync(T entity)
         {
             _context.Set<T>().Remove(entity);
             //await _context.SaveChangesAsync();
             return entity;
         }
 
-        public async Task<T> UpdateAsync(T entity)
+        public T UpdateAsync(T entity)
         {
             _context.Set<T>().Entry(entity).State = EntityState.Modified;
             //await _context.SaveChangesAsync();
