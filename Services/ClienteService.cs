@@ -41,10 +41,11 @@ namespace Estacionei.Services
 
         public async Task<ResponseBase<PagedList<ClienteResponseDto>>> GetAllClienteByPaginationAsync(ClienteQueryParameters queryParameters)
         {
-            var clientes = _unitOfWork.ClienteRepository.GetAllQueryble().AsNoTracking().Include(cli =>cli.VeiculosCliente).OrderBy(cliente => cliente.ClienteId);
+            var clientes = _unitOfWork.ClienteRepository.GetAllQueryable().AsNoTracking().Include(cli =>cli.VeiculosCliente).OrderBy(cliente => cliente.ClienteId);
 
             // Obtém a lista paginada
-            var clientesPaginados = await PaginationService<ClienteResponseDto,Cliente>.GetPagedListAsync(clientes, queryParameters,_mapper);
+            var clientesPaginados = await PagedListService<ClienteResponseDto, Cliente>.CreatePagedList(clientes, queryParameters, _mapper);
+
             if (clientesPaginados.Count() <= 0)
             {
                 return ResponseBase<PagedList<ClienteResponseDto>>.FailureResult("Não há registros no banco.", HttpStatusCode.NotFound);
@@ -106,7 +107,7 @@ namespace Estacionei.Services
             {
                 return ResponseBase<bool>.FailureResult("Cliente não encontrado.", HttpStatusCode.NotFound);
             }
-            await _unitOfWork.ClienteRepository.UpdateAsync(_mapper.Map<Cliente>(clienteDto));
+             _unitOfWork.ClienteRepository.UpdateAsync(_mapper.Map<Cliente>(clienteDto));
             await _unitOfWork.Commit();
             await _unitOfWork.Dispose();
             return ResponseBase<bool>.SuccessResult(true, "Cliente atualizado com sucesso.");
@@ -118,7 +119,7 @@ namespace Estacionei.Services
             {
                 return ResponseBase<bool>.FailureResult("Cliente não encontrado.", HttpStatusCode.NotFound);
             }
-            await _unitOfWork.ClienteRepository.DeleteAsync(cliente);
+             _unitOfWork.ClienteRepository.DeleteAsync(cliente);
             await _unitOfWork.Commit();
             await _unitOfWork.Dispose();
             return ResponseBase<bool>.SuccessResult(true, "Cliente deletado com sucesso.");
