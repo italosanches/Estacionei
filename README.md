@@ -14,7 +14,7 @@ Atualmente, a API está em fase de desenvolvimento, mas os **endpoints** listado
    dotnet ef database update
 
 6 - Aguarde a criação do banco e suas tabelas.   
-7 - Dentro do codigo, altere o arquivo appsettings.json -> ConnectionString  -> DefaultConnection -> Alterando apenas a instancia do SQL
+7 - Dentro do codigo, altere o arquivo appsettings.Development.json -> ConnectionString  -> DefaultConnection -> Alterando apenas a instancia do SQL
 ``` json
 "Server=InstanciaSQL;Database=DB_Estacionei;Trusted_Connection=True; TrustServerCertificate=True;"
 ```
