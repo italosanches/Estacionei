@@ -1,9 +1,11 @@
 ﻿using Estacionei.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Estacionei.Context
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -19,6 +21,8 @@ namespace Estacionei.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder); // chama as configuracoes padroes do Identity
+
             modelBuilder.Entity<Veiculo>()
             .HasIndex(v => v.VeiculoPlaca)
             .IsUnique();
@@ -32,6 +36,8 @@ namespace Estacionei.Context
            .WithOne(s => s.Entrada) // Uma Saida tem uma Entrada
            .HasForeignKey<Saida>(s => s.EntradaId) // Chave estrangeira da Saida
            .OnDelete(DeleteBehavior.Cascade); // Comportamento ao deletar
+
+            
         }
     }
 }
