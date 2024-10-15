@@ -7,6 +7,7 @@ using Estacionei.Pagination.Parameters;
 using Estacionei.Pagination.Parameters.ClienteParameters;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -24,7 +25,7 @@ namespace Estacionei.Controllers
 		{
 			_clienteService = clienteService;
 		}
-
+		[Authorize]
 		[HttpGet]
 		public async Task<IActionResult> GetAll([FromQuery] ClienteQueryParameters queryParameters)
 		{

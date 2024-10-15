@@ -23,6 +23,10 @@ namespace Estacionei.Context
         {
             base.OnModelCreating(modelBuilder); // chama as configuracoes padroes do Identity
 
+
+            modelBuilder.Entity<ApplicationUser>().HasIndex(user => user.Email).IsUnique();
+              
+
             modelBuilder.Entity<Veiculo>()
             .HasIndex(v => v.VeiculoPlaca)
             .IsUnique();
