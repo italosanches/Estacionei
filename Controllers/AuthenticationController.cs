@@ -11,7 +11,6 @@ namespace Estacionei.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
     public class AuthenticationController : ControllerBase
     {
         private readonly INewAuthenticationService _authenticationService;
@@ -71,6 +70,7 @@ namespace Estacionei.Controllers
             }
             return StatusCode((int)result.StatusCode, result.Message);
         }
+
         [HttpPost("Revoke")]
         public async Task<IActionResult> Revoke(string userEmail)
         {
@@ -87,6 +87,7 @@ namespace Estacionei.Controllers
 
 
         }
+
         [Authorize(Policy = "AdminOnly")]
         [HttpPost("Role")]
         public async Task<IActionResult> CreateRole(string roleName)
@@ -98,6 +99,7 @@ namespace Estacionei.Controllers
             var result = await _authenticationService.CreateRole(roleName);
             return StatusCode((int)result.StatusCode, result.Message);
         }
+
         [Authorize(Policy = "AdminOnly")]
         [HttpPost("AddRoleToUser")]
         public async Task<IActionResult> AddRoleToUser(string userEmail, string roleName)

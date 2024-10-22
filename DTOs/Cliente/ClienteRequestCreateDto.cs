@@ -14,7 +14,7 @@ namespace Estacionei.DTOs.Cliente
         [Phone(ErrorMessage = "O telefone deve ser válido.")]
         public string ClienteTelefone { get; set; }
 
-        public VeiculoClienteDto? Veiculo { get; set; }
+        public VeiculoClienteRequestDto? Veiculo { get; set; }
 
     }
 }
