@@ -4,6 +4,7 @@ using Estacionei.Pagination.Parameters;
 using Estacionei.Pagination.Parameters.EntradaParameters;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -13,6 +14,7 @@ namespace Estacionei.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "UserOnly")]
     public class EntradasController : ControllerBase
     {
         private readonly IEntradaService _entradaService;
