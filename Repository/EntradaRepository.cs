@@ -1,6 +1,8 @@
 ﻿using Estacionei.Context;
+using Estacionei.Enums;
 using Estacionei.Models;
 using Estacionei.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Estacionei.Repository
 {
@@ -10,5 +12,11 @@ namespace Estacionei.Repository
         {
             
         }
+        public async Task<bool> HasOpenEntryForVehicle(int idVeiculo)
+        {
+            return await _context.Entrada.AsNoTracking().AnyAsync(entrada => entrada.VeiculoId == idVeiculo && entrada.StatusEntrada == StatusEntrada.Aberto);
+            
+        }
     }
 }
+

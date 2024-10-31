@@ -5,8 +5,11 @@ using System.Text.Json.Serialization;
 
 namespace Estacionei.DTOs.Entrada
 {
-    public class EntradaRequestCreateDto
+    public class EntradaRequestDto
     {
+        [JsonIgnore]
+        public int EntradaId { get; set; }
+
         [Required(ErrorMessage ="O ID do veiculo é obrigatorio.")]
         public int VeiculoId { get; set; }
 
