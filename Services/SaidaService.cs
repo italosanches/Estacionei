@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Azure;
 using Estacionei.DTOs.Cliente;
+using Estacionei.DTOs.Entrada;
 using Estacionei.DTOs.Saida;
 using Estacionei.Enums;
+using Estacionei.Extensions;
 using Estacionei.Models;
 using Estacionei.Pagination;
 using Estacionei.Pagination.Parameters;
@@ -78,18 +80,29 @@ namespace Estacionei.Services
         public async Task<ResponseBase<PagedList<SaidaResponseDto>>> GetAllSaidas(SaidaQueryParameters saidaqueryParameters)
         {
             var querySaida = _unitOfWork.SaidaRepository.GetAllQueryable();
-            if (saidaqueryParameters.DataInicio != DateTime.MinValue)
-            {
-                querySaida = querySaida.Where(dataSaida => dataSaida.DataSaida >= saidaqueryParameters.DataInicio);
-            }
-            if ((saidaqueryParameters.DataFim != DateTime.MinValue) && (saidaqueryParameters.DataInicio <= saidaqueryParameters.DataFim))
-            {
-                querySaida = querySaida.Where(dataSaida => dataSaida.DataSaida < saidaqueryParameters.DataFim);
-            }
-            else if( saidaqueryParameters.DataFim <= saidaqueryParameters.DataInicio)
-            {
-                return ResponseBase<PagedList<SaidaResponseDto>>.FailureResult("Data fim menor que data data de inicio.", HttpStatusCode.NotFound);
 
+            if (saidaqueryParameters.DataInicio != DateTime.MinValue && saidaqueryParameters.DataInicio > saidaqueryParameters.DataFim)
+            {
+                return ResponseBase<PagedList<SaidaResponseDto>>.FailureResult("Data de início não pode ser maior que a data de fim", HttpStatusCode.BadRequest);
+            }
+            else
+            {   //Filtranda pela data inicio e fim, caso nao seja passado nenhum valor = min value, entao atribui minvalue
+                querySaida = querySaida.Where(saida => (saidaqueryParameters.DataInicio == DateTime.MinValue || saida.DataSaida >= saidaqueryParameters.DataInicio) &&
+                                                                        (saidaqueryParameters.DataFim == DateTime.MinValue || saida.DataSaida <= saidaqueryParameters.DataFim));
+            }
+            
+            if(saidaqueryParameters.VeiculoId != 0 && saidaqueryParameters.VeiculoPlaca is null)
+            {
+                querySaida = querySaida.Where(saida => saida.Entrada.VeiculoId == saidaqueryParameters.VeiculoId);
+            }
+            else if(saidaqueryParameters.VeiculoId <= 0 && saidaqueryParameters.VeiculoPlaca is not null)
+            {
+                querySaida = querySaida.Where(saida => saida.Entrada.Veiculo.VeiculoPlaca == saidaqueryParameters.VeiculoPlaca.RemoveSpecialCharacters().ToUpper());
+            }
+            else 
+            {
+                querySaida = querySaida.Where(saida => saida.Entrada.Veiculo.VeiculoPlaca == saidaqueryParameters.VeiculoPlaca.RemoveSpecialCharacters().ToUpper() &&
+                                                       saida.Entrada.VeiculoId == saidaqueryParameters.VeiculoId);
             }
             querySaida = querySaida.AsNoTracking().Include(entrada => entrada.Entrada)
                                                   .ThenInclude(veiculo => veiculo.Veiculo)
