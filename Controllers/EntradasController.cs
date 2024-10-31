@@ -14,7 +14,7 @@ namespace Estacionei.Controllers
 {
     [Route("api/entradas")]
     [ApiController]
-    //[Authorize(Policy = "UserOnly")]
+    [Authorize(Policy = "Useronly")]
     public class EntradasController : ControllerBase
     {
         private readonly IEntradaService _entradaService;
