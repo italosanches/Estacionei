@@ -12,9 +12,9 @@ using System.Net;
 
 namespace Estacionei.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/entradas")]
     [ApiController]
-    [Authorize(Policy = "UserOnly")]
+    //[Authorize(Policy = "UserOnly")]
     public class EntradasController : ControllerBase
     {
         private readonly IEntradaService _entradaService;
@@ -27,47 +27,90 @@ namespace Estacionei.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllPaginated([FromQuery] EntradaQueryParameters queryParameters)
         {
-            if (queryParameters.DataInicio > queryParameters.DataFim)
+            if(!ModelState.IsValid)
             {
-                return BadRequest("Data inicio maior que a data fim.");
-
+                return BadRequest(ModelState);
             }
             var result = await _entradaService.GetAllEntradas(queryParameters);
-            if (!result.Success)
+            if (result.Success)
             {
-                return StatusCode((int)result.StatusCode, result.Message);
+                var paginationMetadata = PaginationMetadata<EntradaResponseDto>.CreatePaginationMetadata(result.Data);
+                Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
+                return StatusCode((int)result.StatusCode, result.Data);
             }
-            CreateHeadPagination(result);
-            return StatusCode((int)result.StatusCode, result.Data);
+            return StatusCode((int)result.StatusCode, result.Message);
+
+           
 
         }
         [HttpPost]
-
-        public async Task<IActionResult> Create(EntradaRequestCreateDto entradaRequestCreateDto)
+        public async Task<IActionResult> Create(EntradaRequestDto entradaRequestDto)
         {
-            var result = await _entradaService.CreateEntrada(entradaRequestCreateDto);
-            if (!result.Success)
+            if (!ModelState.IsValid)
             {
-                return StatusCode((int)result.StatusCode, result.Message);
+                return BadRequest(ModelState);
             }
-                return StatusCode((int)result.StatusCode, result.Data);
-        }
-
-        private void CreateHeadPagination(ResponseBase<PagedList<EntradaResponseDto>> result)
-        {
-            var metadata = new
+            var result = await _entradaService.CreateEntrada(entradaRequestDto);
+            if (result.Success)
             {
+                return CreatedAtAction(nameof(GetById), new { id = result.Data.EntradaId }, result.Data);
+            }
+            return StatusCode((int)result.StatusCode, result.Message);
 
-                result.Data.Count,
-                result.Data.TotalCount,
-                result.Data.CurrentPage,
-                result.Data.PageSize,
-                result.Data.TotalPages,
-                result.Data.HasNext,
-                result.Data.HasPrevious
-            };
-
-            Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
         }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (id <= 0)
+            {
+                return BadRequest("Id invalido.");
+            }
+            var result = await _entradaService.GetEntradaById(id);
+            if (result.Success)
+            {
+                return StatusCode((int)result.StatusCode, result.Data);
+            }
+            return StatusCode((int)result.StatusCode, result.Message);
+
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, EntradaRequestDto entradaRequestDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if(id <=0 )
+            {
+                return BadRequest("Id invalido.");
+            }
+            entradaRequestDto.EntradaId = id;
+            var result = await _entradaService.Update(entradaRequestDto);
+            return StatusCode((int)result.StatusCode, result.Message);
+        }
+
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (id <= 0)
+            {
+                return BadRequest("Id invalido.");
+            }
+            var result = await _entradaService.Delete(id);
+            return StatusCode((int)result.StatusCode, result.Message);
+        }
+
+        
     }
 }
