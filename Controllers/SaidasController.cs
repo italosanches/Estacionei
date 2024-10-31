@@ -15,7 +15,7 @@ namespace Estacionei.Controllers
 {
     [Route("api/saidas")]
     [ApiController]
-    //[Authorize(Policy = "UserOnly")]
+    [Authorize(Policy = "UserOnly")]
 
     public class SaidasController : ControllerBase
     {
