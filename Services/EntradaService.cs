@@ -36,15 +36,16 @@ namespace Estacionei.Services
                 entradasQueryable = entradasQueryable.Where(entrada => (queryParameters.DataInicio == DateTime.MinValue || entrada.DataEntrada >= queryParameters.DataInicio) &&
                                                                        (queryParameters.DataFim == DateTime.MinValue || entrada.DataEntrada <= queryParameters.DataFim));
             }
+           
             if (queryParameters.VeiculoId != 0 && queryParameters.VeiculoPlaca is null)
             {
                 entradasQueryable = entradasQueryable.Where(entrada => entrada.VeiculoId == queryParameters.VeiculoId);
             }
-            else if(queryParameters.VeiculoId <= 0 && queryParameters.VeiculoPlaca is not null)
+            else if (queryParameters.VeiculoId <= 0 && queryParameters.VeiculoPlaca is not null)
             {
                 entradasQueryable = entradasQueryable.Where(entrada => entrada.Veiculo.VeiculoPlaca == queryParameters.VeiculoPlaca.RemoveSpecialCharacters().ToUpper());
             }
-            else 
+            else if (queryParameters.VeiculoId != 0 && queryParameters.VeiculoPlaca is not null)
             {
                 entradasQueryable = entradasQueryable.Where(entrada => entrada.Veiculo.VeiculoPlaca == queryParameters.VeiculoPlaca.RemoveSpecialCharacters().ToUpper() &&
                                                                        entrada.VeiculoId == queryParameters.VeiculoId);
@@ -121,13 +122,13 @@ namespace Estacionei.Services
             }
             if (entradaRequestDto.DataEntrada > DateTime.UtcNow)
             {
-                 return ResponseBase<bool>.FailureResult("Entrada deve ser menor que a data de hoje", HttpStatusCode.BadRequest);
+                return ResponseBase<bool>.FailureResult("Entrada deve ser menor que a data de hoje", HttpStatusCode.BadRequest);
             }
-            if(entradaRequestDto.VeiculoId != entradaProcurada.VeiculoId)
+            if (entradaRequestDto.VeiculoId != entradaProcurada.VeiculoId)
             {
-                var VerificarSeVeiculoTemEntradaEmAberto =await _unitOfWork.EntradaRepository
+                var VerificarSeVeiculoTemEntradaEmAberto = await _unitOfWork.EntradaRepository
                                                           .GetAsync(entrada => entrada.VeiculoId == entradaRequestDto.VeiculoId && entrada.StatusEntrada == StatusEntrada.Aberto);
-                if(VerificarSeVeiculoTemEntradaEmAberto != null)
+                if (VerificarSeVeiculoTemEntradaEmAberto != null)
                 {
                     return ResponseBase<bool>.FailureResult($"Existe uma entrada em aberto para o veiculo {VerificarSeVeiculoTemEntradaEmAberto.VeiculoId}", HttpStatusCode.Conflict);
                 }
@@ -141,7 +142,7 @@ namespace Estacionei.Services
 
         public async Task<ResponseBase<bool>> Delete(int id)
         {
-            var entradaProcurada =await _unitOfWork.EntradaRepository.GetAsync(entrada => entrada.EntradaId == id);
+            var entradaProcurada = await _unitOfWork.EntradaRepository.GetAsync(entrada => entrada.EntradaId == id);
             if (entradaProcurada == null)
             {
                 return ResponseBase<bool>.FailureResult("Entrada não encotrada.", HttpStatusCode.NotFound);
@@ -152,7 +153,7 @@ namespace Estacionei.Services
             {
                 return ResponseBase<bool>.FailureResult($"Existe uma saida vinculada.Id: {saidaProcurada.SaidaId}, remova antes de deletar a entrada.", HttpStatusCode.Conflict);
             }
-             _unitOfWork.EntradaRepository.DeleteAsync(_mapper.Map<Entrada>(entradaProcurada));
+            _unitOfWork.EntradaRepository.DeleteAsync(_mapper.Map<Entrada>(entradaProcurada));
             await _unitOfWork.Commit();
             return ResponseBase<bool>.SuccessResult(true, "Entrada removida.");
         }

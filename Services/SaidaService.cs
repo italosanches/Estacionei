@@ -81,14 +81,14 @@ namespace Estacionei.Services
         {
             var querySaida = _unitOfWork.SaidaRepository.GetAllQueryable();
 
-            if (saidaqueryParameters.DataInicio != DateTime.MinValue && saidaqueryParameters.DataInicio > saidaqueryParameters.DataFim)
+            if (saidaqueryParameters.DataFim != DateTime.MinValue && saidaqueryParameters.DataInicio > saidaqueryParameters.DataFim)
             {
                 return ResponseBase<PagedList<SaidaResponseDto>>.FailureResult("Data de início não pode ser maior que a data de fim", HttpStatusCode.BadRequest);
             }
             else
             {   //Filtranda pela data inicio e fim, caso nao seja passado nenhum valor = min value, entao atribui minvalue
                 querySaida = querySaida.Where(saida => (saidaqueryParameters.DataInicio == DateTime.MinValue || saida.DataSaida >= saidaqueryParameters.DataInicio) &&
-                                                                        (saidaqueryParameters.DataFim == DateTime.MinValue || saida.DataSaida <= saidaqueryParameters.DataFim));
+                                                       (saidaqueryParameters.DataFim == DateTime.MinValue || saida.DataSaida <= saidaqueryParameters.DataFim));
             }
             
             if(saidaqueryParameters.VeiculoId != 0 && saidaqueryParameters.VeiculoPlaca is null)
@@ -99,7 +99,7 @@ namespace Estacionei.Services
             {
                 querySaida = querySaida.Where(saida => saida.Entrada.Veiculo.VeiculoPlaca == saidaqueryParameters.VeiculoPlaca.RemoveSpecialCharacters().ToUpper());
             }
-            else 
+            else if(saidaqueryParameters.VeiculoId != 0 && saidaqueryParameters.VeiculoPlaca is not null)
             {
                 querySaida = querySaida.Where(saida => saida.Entrada.Veiculo.VeiculoPlaca == saidaqueryParameters.VeiculoPlaca.RemoveSpecialCharacters().ToUpper() &&
                                                        saida.Entrada.VeiculoId == saidaqueryParameters.VeiculoId);
