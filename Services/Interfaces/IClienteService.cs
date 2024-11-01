@@ -9,7 +9,6 @@ namespace Estacionei.Services.Interfaces
 {
     public interface IClienteService
     {
-        Task<ResponseBase<IEnumerable<ClienteResponseDto>>> GetAllClienteAsync();
         Task<ResponseBase<PagedList<ClienteResponseDto>>> GetAllClienteByPaginationAsync(ClienteQueryParameters queryParameters);
         Task<ResponseBase<ClienteResponseDto>> GetClienteByIdAsync(int id);
         Task<ResponseBase<ClienteResponseDto>> AddClienteAsync(ClienteRequestCreateDto clienteDto);
