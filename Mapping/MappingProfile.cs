@@ -34,9 +34,8 @@ namespace Estacionei.Mapping
 
 
             //Configuracao Valor Hora
-            CreateMap<ConfiguracaoValorHoraCreateDto,ConfiguracaoValorHora>();
-            CreateMap<ConfiguracaoValorHoraUpdateDto, ConfiguracaoValorHora>();
-            CreateMap<ConfiguracaoValorHora,ConfiguracaoValorHoraGetDto>();
+            CreateMap<ConfiguracaoValorHoraRequestDto,ConfiguracaoValorHora>().ReverseMap();
+            CreateMap<ConfiguracaoValorHora,ConfiguracaoValorHoraResponseDto>();
 
            //Configuracao entrada
 			CreateMap<EntradaRequestDto, Entrada>().ForMember(dest => dest.StatusEntrada, option => option.MapFrom(src => StatusEntrada.Aberto)); ;
