@@ -61,6 +61,8 @@ builder.Services.AddScoped<IEntradaRepository,EntradaRepository>();
 builder.Services.AddScoped<IEntradaService,EntradaService>();   
 builder.Services.AddScoped<IConfiguracaoValorHoraRepository, ConfiguracaoValorHoraRepository>();
 builder.Services.AddScoped<IConfiguracaoValorHoraService, ConfiguracaoValorHoraService>();
+builder.Services.AddScoped<ISaidaRepository, SaidaRepository>();
+builder.Services.AddScoped<ISaidaService, SaidaService>();
 builder.Services.AddScoped<INewAuthenticationService, NewAuthenticationService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));

@@ -17,14 +17,14 @@ namespace Estacionei.Mapping
 		public MappingProfile() 
 		{
 		    //Cliente
-            CreateMap<ClienteRequestCreateDto, Cliente>();
-			CreateMap<Cliente, ClienteResponseDto>().ForMember(dest => dest.VeiculosCliente, opt => opt.MapFrom(src => src.VeiculosCliente)); 
-			
+            CreateMap<ClienteRequestCreateDto, Cliente>().ReverseMap();
+			CreateMap<Cliente, ClienteResponseDto>().ForMember(dest => dest.VeiculosCliente, opt => opt.MapFrom(src => src.VeiculosCliente)).ReverseMap();
+			CreateMap<ClienteRequestUpdateDto, Cliente>().ReverseMap();
+
 
 			//Veiculos
-			CreateMap<VeiculoRequestCreateDto, Veiculo>();
-			CreateMap<VeiculoRequestUpdateDto, Veiculo>();
-			CreateMap<Veiculo, VeiculoResponseDto>();
+			CreateMap<VeiculoRequestDto, Veiculo>();
+			CreateMap<Veiculo, VeiculoResponseDto>().ForMember(dest => dest.ClienteNome , option => option.MapFrom(src => src.Cliente.ClienteNome));
             CreateMap<Veiculo, VeiculoClienteResponseDto>();
 
 
@@ -34,9 +34,8 @@ namespace Estacionei.Mapping
 
 
             //Configuracao Valor Hora
-            CreateMap<ConfiguracaoValorHoraCreateDto,ConfiguracaoValorHora>();
-            CreateMap<ConfiguracaoValorHoraUpdateDto, ConfiguracaoValorHora>();
-            CreateMap<ConfiguracaoValorHora,ConfiguracaoValorHoraGetDto>();
+            CreateMap<ConfiguracaoValorHoraRequestDto,ConfiguracaoValorHora>().ReverseMap();
+            CreateMap<ConfiguracaoValorHora,ConfiguracaoValorHoraResponseDto>();
 
            //Configuracao entrada
 			CreateMap<EntradaRequestDto, Entrada>().ForMember(dest => dest.StatusEntrada, option => option.MapFrom(src => StatusEntrada.Aberto)); ;

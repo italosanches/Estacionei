@@ -9,6 +9,7 @@ namespace Estacionei.Repository
         private IVeiculoRepository _veiculoRepo;
         private IConfiguracaoValorHoraRepository _configuracaoValorHoraRepo;
         private IEntradaRepository _entradaRepo;
+        private ISaidaRepository _saidaRepo;
 
         public AppDbContext _context;
 
@@ -35,6 +36,11 @@ namespace Estacionei.Repository
         public IEntradaRepository EntradaRepository 
         {
             get { return _entradaRepo  = _entradaRepo ?? new EntradaRepository(_context); }
+        }
+
+        public ISaidaRepository SaidaRepository
+        {
+            get { return _saidaRepo = _saidaRepo ?? new SaidaRepository(_context); }
         }
 
         public async Task Commit()

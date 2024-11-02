@@ -11,6 +11,7 @@ using Estacionei.Repository.Interfaces;
 using Estacionei.Response;
 using Estacionei.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Net;
 using System.Reflection.Metadata;
 
@@ -27,26 +28,21 @@ namespace Estacionei.Services
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
-        public async Task<ResponseBase<IEnumerable<ClienteResponseDto>>> GetAllClienteAsync()
+
+        public async Task<ResponseBase<PagedList<ClienteResponseDto>>> GetAllClienteByPaginationAsync(ClienteQueryParameters clienteQueryParameters)
         {
-            var clientes = await _unitOfWork.ClienteRepository.GetAllClienteAndVeiculos();
-            var clientesDto = _mapper.Map<IEnumerable<ClienteResponseDto>>(clientes);
-            if (!clientesDto.Any())
+            var clientesQueryable = _unitOfWork.ClienteRepository.GetAllQueryable().AsNoTracking();
+
+            if (clienteQueryParameters.ClienteNome is not null)
             {
-                return ResponseBase<IEnumerable<ClienteResponseDto>>.FailureResult("Não há registros no banco.", HttpStatusCode.NotFound);
-
+                clientesQueryable = clientesQueryable.Where(cliente => cliente.ClienteNome.ToUpper().Contains(clienteQueryParameters.ClienteNome.ToUpper().RemoveSpecialCharacters()));
             }
-            return ResponseBase<IEnumerable<ClienteResponseDto>>.SuccessResult(clientesDto ?? new List<ClienteResponseDto>(), "Lista de clientes");
-        }
 
-        public async Task<ResponseBase<PagedList<ClienteResponseDto>>> GetAllClienteByPaginationAsync(ClienteQueryParameters queryParameters)
-        {
-            var clientes = _unitOfWork.ClienteRepository.GetAllQueryable().AsNoTracking().Include(cli =>cli.VeiculosCliente).OrderBy(cliente => cliente.ClienteId);
-
+            clientesQueryable = clientesQueryable.Include(cli => cli.VeiculosCliente);
             // Obtém a lista paginada
-            var clientesPaginados = await PagedListService<ClienteResponseDto, Cliente>.CreatePagedList(clientes, queryParameters, _mapper);
+            var clientesPaginados = await PagedListService<ClienteResponseDto, Cliente>.CreatePagedList(clientesQueryable, clienteQueryParameters, _mapper);
 
-            if (clientesPaginados.Count() <= 0)
+            if (!clientesPaginados.Any())
             {
                 return ResponseBase<PagedList<ClienteResponseDto>>.FailureResult("Não há registros no banco.", HttpStatusCode.NotFound);
             }    
@@ -57,7 +53,7 @@ namespace Estacionei.Services
 
         public async Task<ResponseBase<ClienteResponseDto>> GetClienteByIdAsync(int id)
         {
-            var cliente = await GetCliente(id);
+            var cliente = await _unitOfWork.ClienteRepository.GetClienteAndVeiculos(id); 
             if (cliente == null)
             {
                 return ResponseBase<ClienteResponseDto>.FailureResult("Cliente não encontrado", HttpStatusCode.NotFound);
@@ -102,7 +98,7 @@ namespace Estacionei.Services
 
         public async Task<ResponseBase<bool>> UpdateClienteAsync(ClienteRequestUpdateDto clienteDto)
         {
-            var cliente = await GetCliente(clienteDto.ClienteId);
+            var cliente = await _unitOfWork.ClienteRepository.GetClienteAndVeiculos(clienteDto.ClienteId);
             if (cliente == null)
             {
                 return ResponseBase<bool>.FailureResult("Cliente não encontrado.", HttpStatusCode.NotFound);
@@ -114,7 +110,7 @@ namespace Estacionei.Services
         }
         public async Task<ResponseBase<bool>> DeleteClienteAsync(int id)
         {
-            var cliente = await GetCliente(id);
+            var cliente = await _unitOfWork.ClienteRepository.GetClienteAndVeiculos(id); 
             if (cliente == null)
             {
                 return ResponseBase<bool>.FailureResult("Cliente não encontrado.", HttpStatusCode.NotFound);
@@ -125,13 +121,6 @@ namespace Estacionei.Services
             return ResponseBase<bool>.SuccessResult(true, "Cliente deletado com sucesso.");
 
 
-        }
-
-
-        private async Task<Cliente> GetCliente(int id)
-        {
-            var cliente = await _unitOfWork.ClienteRepository.GetClienteAndVeiculos(id);
-            return cliente;
         }
     }
 }

@@ -4,7 +4,7 @@ using Estacionei.Pagination.Parameters;
 
 namespace Estacionei.Services
 {
-    public class PagedListService<TResult,TSource> where TResult : class
+    public class PagedListService<TResult,TSource> where TResult : class where TSource : class
     {
         public static async Task<PagedList<TResult>> CreatePagedList(IQueryable<TSource>source,QueryParameters parameters,IMapper mapper)
         {

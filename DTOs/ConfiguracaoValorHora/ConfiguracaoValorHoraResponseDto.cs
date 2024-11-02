@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Estacionei.DTOs.ConfiguracaoValorHora
 {
-    public class ConfiguracaoValorHoraGetDto 
+    public class ConfiguracaoValorHoraResponseDto 
     {
         public int Id { get; set; }
         public TipoVeiculo TipoVeiculo { get; set; }

@@ -8,13 +8,13 @@ namespace Estacionei.Services.Interfaces
 {
     public interface IConfiguracaoValorHoraService
     {
-        Task<ResponseBase<IEnumerable<ConfiguracaoValorHoraGetDto>>> GetAllConf();
-        Task<ResponseBase<ConfiguracaoValorHoraGetDto>> GetById(int id);
+        Task<ResponseBase<IEnumerable<ConfiguracaoValorHoraResponseDto>>> GetAllConf();
+        Task<ResponseBase<ConfiguracaoValorHoraResponseDto>> GetById(int id);
 
-        Task<ResponseBase<ConfiguracaoValorHoraGetDto>> GetByTipoVeiculo(TipoVeiculo tipoVeiculo);
+        Task<ResponseBase<ConfiguracaoValorHoraResponseDto>> GetByTipoVeiculo(TipoVeiculo tipoVeiculo);
 
-        Task<ResponseBase<ConfiguracaoValorHoraGetDto>> CreateConf(ConfiguracaoValorHoraCreateDto confValorHoraCreateDto);
+        Task<ResponseBase<ConfiguracaoValorHoraResponseDto>> CreateConf(ConfiguracaoValorHoraRequestDto confValorHoraCreateDto);
 
-        Task<ResponseBase<bool>> UpdateConf(ConfiguracaoValorHoraUpdateDto confValorHoraUpdateDto);
+        Task<ResponseBase<bool>> UpdateConf(ConfiguracaoValorHoraRequestDto confValorHoraUpdateDto);
     }
 }
