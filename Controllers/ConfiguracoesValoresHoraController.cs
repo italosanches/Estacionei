@@ -3,6 +3,7 @@ using Estacionei.DTOs.ConfiguracaoValorHora;
 using Estacionei.Enums;
 using Estacionei.Repository.Interfaces;
 using Estacionei.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -11,15 +12,15 @@ namespace Estacionei.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "UserOnly")]
     public class ConfiguracoesValoresHoraController : ControllerBase
     {
         private readonly IConfiguracaoValorHoraService _confValoHoraService;
-        private readonly IMapper _mapper;
 
-        public ConfiguracoesValoresHoraController(IConfiguracaoValorHoraService confValoHoraService, IMapper mapper)
+        public ConfiguracoesValoresHoraController(IConfiguracaoValorHoraService confValoHoraService)
         {
             _confValoHoraService = confValoHoraService;
-            _mapper = mapper;
+            
         }
 
         [HttpGet]
@@ -56,9 +57,9 @@ namespace Estacionei.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(ConfiguracaoValorHoraCreateDto configuracaoValorHoraCreateDto)
+        public async Task<IActionResult> Create(ConfiguracaoValorHoraRequestDto ConfiguracaoValorHoraRequestDto)
         {
-            var result = await _confValoHoraService.CreateConf(configuracaoValorHoraCreateDto);
+            var result = await _confValoHoraService.CreateConf(ConfiguracaoValorHoraRequestDto);
             if (result.Success)
             {
                 return CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data);
@@ -68,10 +69,10 @@ namespace Estacionei.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, ConfiguracaoValorHoraUpdateDto configuracaoValorHoraUpdateDto)
+        public async Task<IActionResult> Update(int id, ConfiguracaoValorHoraRequestDto ConfiguracaoValorHoraRequestDto)
         {
-            configuracaoValorHoraUpdateDto.Id = id;
-            var result = await _confValoHoraService.UpdateConf(configuracaoValorHoraUpdateDto);
+            ConfiguracaoValorHoraRequestDto.Id = id;
+            var result = await _confValoHoraService.UpdateConf(ConfiguracaoValorHoraRequestDto);
             return StatusCode((int)result.StatusCode, result.Message);
         }
     }
