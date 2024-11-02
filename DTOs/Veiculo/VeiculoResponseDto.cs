@@ -13,6 +13,7 @@ namespace Estacionei.DTOs.Veiculos
 		
 		public TipoVeiculo TipoVeiculo { get; set; }
 		
+		public string? ClienteNome {  get; set; }
 		public int ClienteId { get; set; }
 	}
 }
