@@ -2,13 +2,13 @@
 {
     public interface IUnitOfWork
     {
-        IClienteRepository ClienteRepository { get; }
-        IVeiculoRepository VeiculoRepository { get; }
+        ICustomerRepository CustomerRepository { get; }
+        IVehicleRepository VehicleRepository { get; }
 
-        IEntradaRepository EntradaRepository { get; }
-        ISaidaRepository SaidaRepository { get; }
+        IEntryRepository EntryRepository { get; }
+        IExitRepository ExitRepository { get; }
 
-        IConfiguracaoValorHoraRepository ConfiguracaoValorHoraRepository { get; }
+        IHourPriceConfigurationRepository HourPriceConfigurationRepository { get; }
 
 
         Task Commit();
