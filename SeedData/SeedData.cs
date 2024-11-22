@@ -22,6 +22,11 @@ public class SeedData
             await roleManager.CreateAsync(new IdentityRole("Admin"));
         }
 
+        if (!await roleManager.RoleExistsAsync("User"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("User"));
+        }
+
         // Cria o usuário se não existir
         var user = await userManager.FindByNameAsync(userName);
         if (user == null)
@@ -33,6 +38,8 @@ public class SeedData
             {
                 // Adiciona a role ao usuário
                 await userManager.AddToRoleAsync(user, roleName);
+                await userManager.AddToRoleAsync(user, "User");
+
             }
         }
     }
