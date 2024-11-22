@@ -3,11 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace Estacionei.DTOs.Saida
 {
-    public class SaidaUpdateRequestDto
+    public class ExitUpdateRequestDto
     {
         [JsonIgnore]
-        public int SaidaId { get; set; }
+        public int ExitId { get; set; }
         [Required(ErrorMessage = "Data de saida é obrigatorio.")]
-        public DateTime DataSaida { get; set; }
+        public DateTime ExitDate { get; set; }
     }
 }

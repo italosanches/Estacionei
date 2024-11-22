@@ -3,15 +3,15 @@ using System.Text.Json.Serialization;
 
 namespace Estacionei.DTOs.Saida
 {
-    public class SaidaRequestDto
+    public class ExitRequestDto
     {
         [JsonIgnore]
-        public int SaidaId { get;set; }
+        public int ExitId { get;set; }
 
         [Required(ErrorMessage = "ID entrada é obrigatorio.")]
-        public int EntradaId { get; set; }
+        public int EntryId { get; set; }
 
         [Required(ErrorMessage = "Data de saida é obrigatorio.")]
-        public DateTime DataSaida { get; set; }
+        public DateTime ExitDate { get; set; }
     }
 }

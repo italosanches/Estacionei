@@ -5,17 +5,18 @@ using System.Text.Json.Serialization;
 
 namespace Estacionei.DTOs.Entrada
 {
-    public class EntradaRequestDto
+    public class EntryRequestDto
     {
         [JsonIgnore]
-        public int EntradaId { get; set; }
+        public int EntryId { get; set; }
 
         [Required(ErrorMessage ="O ID do veiculo é obrigatorio.")]
-        public int VeiculoId { get; set; }
+        public int VehicleId { get; set; }
 
-        public DateTime DataEntrada { get; set; }
+        [Required(ErrorMessage ="Data de entrada é obrigatorio.")]
+        public DateTime EntryDate { get; set; }
 
         [JsonIgnore]
-        public StatusEntrada StatusEntrada { get; set; }
+        public EntryStatus EntryStatus { get; set; }
     }
 }

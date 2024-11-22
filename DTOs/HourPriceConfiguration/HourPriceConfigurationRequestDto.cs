@@ -5,17 +5,17 @@ using System.Text.Json.Serialization;
 
 namespace Estacionei.DTOs.ConfiguracaoValorHora
 {
-    public class ConfiguracaoValorHoraRequestDto
+    public class HourPriceConfigurationRequestDto
     {
         [JsonIgnore]
-        public int Id { get; set; }
+        public int HourPriceConfigurationId { get; set; }
 
         [Required (ErrorMessage ="Tipo de veiculo é obrigatorio")]
-        [ValidateEnum(typeof(TipoVeiculo))]
-        public TipoVeiculo TipoVeiculo { get; set; }
+        [ValidateEnum(typeof(VehicleType))]
+        public VehicleType VehicleType { get; set; }
 
         [Required(ErrorMessage = "Valor por hora é obrigatorio.")]
 
-        public decimal ValorHora { get; set; }
+        public decimal HourlyRate { get; set; }
     }
 }
