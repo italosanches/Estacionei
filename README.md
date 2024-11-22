@@ -4,19 +4,23 @@ API desenvolvida para controlar as entradas e saídas de veículos em um estacio
 ## Como Utilizar?
 
 1. **Instalar o Docker**.
-2. **Clonar o repositorio.**
-3. **Abra o terminal e va ate a pasta raiz da solução com o comando CD, exemplo C:\Users\Usuario\source\repos\Estacionei**.
-4. **Rode o seguinte comando no terminal: docker-compose up --build**'Aguarde o docker fazer o trabalho. =)'
-5. **Acesse o Swagger via http://localhost:8080/swagger/index.html**:
-6. **Utilize o seguinte login para a autenticar no EndPoint de Login**
+2. **Clonar o repositório**.
+3. **Abra o terminal e vá até a pasta raiz da solução** com o comando `cd`, exemplo:  
+   `C:\Users\Usuario\source\repos\Estacionei`.
+4. **Rode o seguinte comando no terminal**:  
+   ```bash
+   docker-compose up --build
+   ```
+5. **Aguarde o Docker fazer o trabalho.=)**
+6. **Acesse o Swagger via: http://localhost:8080/swagger/index.html**:
+7. **Utilize o seguinte login para se autenticar no Endpoint de Login:**
    ``` Json
       {
         "email": "admin@default.com",
         "password": "P@ssw0rd123!"
       }
-
-8. **Desfrute da API**
-   
+8. **Entre com o token gerado no cadeado verde no canto esquerdo superior, digite Bearer + token.**
+ 
 # Endpoints
 
 ### **Autenticação**  
