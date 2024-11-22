@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Estacionei.DTOs;
+using Estacionei.DTOs.Account;
 using Estacionei.DTOs.Cliente;
 using Estacionei.DTOs.ClienteVeiculo;
 using Estacionei.DTOs.ConfiguracaoValorHora;
+using Estacionei.DTOs.Customer;
 using Estacionei.DTOs.Entrada;
 using Estacionei.DTOs.Saida;
-using Estacionei.DTOs.Veiculo;
+using Estacionei.DTOs.Vehicle;
 using Estacionei.DTOs.Veiculos;
 using Estacionei.Enums;
 using Estacionei.Models;
@@ -17,44 +19,49 @@ namespace Estacionei.Mapping
 		public MappingProfile() 
 		{
 		    //Cliente
-            CreateMap<ClienteRequestCreateDto, Cliente>().ReverseMap();
-			CreateMap<Cliente, ClienteResponseDto>().ForMember(dest => dest.VeiculosCliente, opt => opt.MapFrom(src => src.VeiculosCliente)).ReverseMap();
-			CreateMap<ClienteRequestUpdateDto, Cliente>().ReverseMap();
+            CreateMap<CustomerRequestCreateDto, Customer>().ReverseMap();
+			CreateMap<Customer, CustomerResponseDto>().ForMember(dest => dest.CustomerVehicles, opt => opt.MapFrom(src => src.CustomerVehicles)).ReverseMap();
+			CreateMap<CustomerRequestUpdateDto, Customer>().ReverseMap();
 
 
 			//Veiculos
-			CreateMap<VeiculoRequestDto, Veiculo>();
-			CreateMap<Veiculo, VeiculoResponseDto>().ForMember(dest => dest.ClienteNome , option => option.MapFrom(src => src.Cliente.ClienteNome));
-            CreateMap<Veiculo, VeiculoClienteResponseDto>();
+			CreateMap<VehicleRequestDto, Vehicle>();
+			CreateMap<Vehicle, VehicleResponseDto>().ForMember(dest => dest.CustomerName , option => option.MapFrom(src => src.Customer.CustomerName));
+            CreateMap<Vehicle, CustomerVehicleResponseDto>();
 
 
             //Veiculos Clientes
-            CreateMap<VeiculoClienteRequestDto, Veiculo>().ReverseMap();
-			CreateMap<Veiculo, VeiculoClienteResponseDto>().ReverseMap();
+            CreateMap<CustomerVehicleRequestDto, Vehicle>().ReverseMap();
+			CreateMap<Vehicle, CustomerVehicleResponseDto>().ReverseMap();
 
 
             //Configuracao Valor Hora
-            CreateMap<ConfiguracaoValorHoraRequestDto,ConfiguracaoValorHora>().ReverseMap();
-            CreateMap<ConfiguracaoValorHora,ConfiguracaoValorHoraResponseDto>();
+            CreateMap<HourPriceConfigurationRequestDto,HourPriceConfiguration>().ReverseMap();
+            CreateMap<HourPriceConfiguration, HourPriceConfigurationResponseDto>();
 
            //Configuracao entrada
-			CreateMap<EntradaRequestDto, Entrada>().ForMember(dest => dest.StatusEntrada, option => option.MapFrom(src => StatusEntrada.Aberto)); ;
-			CreateMap<Entrada, EntradaResponseDto>().ForMember(dest => dest.VeiculoId, option => option.MapFrom(src => src.VeiculoId))
-													.ForMember(dest => dest.VeiculoPlaca, option => option.MapFrom(src => src.Veiculo.VeiculoPlaca))
-													.ForMember(dest => dest.VeiculoModelo, option => option.MapFrom(src => src.Veiculo.VeiculoModelo))
-													.ForMember(dest => dest.ClienteId, option => option.MapFrom(src => src.Veiculo.Cliente.ClienteId))
-													.ForMember(dest => dest.ClienteNome, option => option.MapFrom(src => src.Veiculo.Cliente.ClienteNome));
+			CreateMap<EntryRequestDto, Entry>().ForMember(dest => dest.EntryStatus, option => option.MapFrom(src => EntryStatus.Open)); ;
+			CreateMap<Entry, EntryResponseDto>().ForMember(dest => dest.VehicleId, option => option.MapFrom(src => src.VehicleId))
+												.ForMember(dest => dest.VehicleLicensePlate, option => option.MapFrom(src => src.Vehicle.VehicleLicensePlate))
+												.ForMember(dest => dest.VehicleModel, option => option.MapFrom(src => src.Vehicle.VehicleModel))
+												.ForMember(dest => dest.CustomerId, option => option.MapFrom(src => src.Vehicle.Customer.CustomerId))
+												.ForMember(dest => dest.CustomerName, option => option.MapFrom(src => src.Vehicle.Customer.CustomerName));
 													
 
 			//Configuracao saida
-			CreateMap<SaidaRequestDto, Saida>().ForMember(dest => dest.ValorCobrado, option => option.Ignore());
-			CreateMap<Saida, SaidaResponseDto>().ForMember(dest => dest.DataEntrada, option => option.MapFrom(src => src.Entrada.DataEntrada))
-												.ForMember(dest => dest.VeiculoId, option => option.MapFrom(src => src.Entrada.VeiculoId))
-												.ForMember(dest => dest.VeiculoPlaca, option => option.MapFrom(src => src.Entrada.Veiculo.VeiculoPlaca))
-												.ForMember(dest => dest.ClienteId, option => option.MapFrom(src => src.Entrada.Veiculo.Cliente.ClienteId))
-												.ForMember(dest => dest.ClienteNome, option => option.MapFrom(src => src.Entrada.Veiculo.Cliente.ClienteNome))
-												.ForMember(dest => dest.VeiculoModelo, option => option.MapFrom(src => src.Entrada.Veiculo.VeiculoModelo));
+			CreateMap<ExitRequestDto, Exit>().ForMember(dest => dest.ChargedAmount, option => option.Ignore());
+			CreateMap<Exit, ExitResponseDto>().ForMember(dest => dest.EntryDate, option => option.MapFrom(src => src.Entry.EntryDate))
+												.ForMember(dest => dest.VehicleId, option => option.MapFrom(src => src.Entry.VehicleId))
+												.ForMember(dest => dest.VehicleLicensePlate, option => option.MapFrom(src => src.Entry.Vehicle.VehicleLicensePlate))
+												.ForMember(dest => dest.CustomerId, option => option.MapFrom(src => src.Entry.Vehicle.Customer.CustomerId))
+												.ForMember(dest => dest.CustomerName, option => option.MapFrom(src => src.Entry.Vehicle.Customer.CustomerName))
+												.ForMember(dest => dest.VehicleModel, option => option.MapFrom(src => src.Entry.Vehicle.VehicleModel));
 
+
+			// Users
+
+			CreateMap<ApplicationUser, UserResponseDto>().ForMember(dest => dest.UserId, option => option.MapFrom(src => src.Id))
+													     .ForMember(dest => dest.UserEmail, option => option.MapFrom(src => src.Email));
 
         }
     }

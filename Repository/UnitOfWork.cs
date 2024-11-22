@@ -5,11 +5,11 @@ namespace Estacionei.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private IClienteRepository _clienteRepo;
-        private IVeiculoRepository _veiculoRepo;
-        private IConfiguracaoValorHoraRepository _configuracaoValorHoraRepo;
-        private IEntradaRepository _entradaRepo;
-        private ISaidaRepository _saidaRepo;
+        private ICustomerRepository _customerRepo;
+        private IVehicleRepository _vehicleRepo;
+        private IHourPriceConfigurationRepository _hourPriceConfigurationRepo;
+        private IEntryRepository _entryRepo;
+        private IExitRepository _exitRepo;
 
         public AppDbContext _context;
 
@@ -18,29 +18,29 @@ namespace Estacionei.Repository
         {
             _context = context;
         }
-        public IClienteRepository ClienteRepository
+        public ICustomerRepository CustomerRepository
         {
-            get { return _clienteRepo = _clienteRepo ??  new ClienteRepository(_context); }
+            get { return _customerRepo = _customerRepo ??  new CustomerRepository(_context); }
         }
 
-        public IVeiculoRepository VeiculoRepository
+        public IVehicleRepository VehicleRepository
         {
-            get { return _veiculoRepo = _veiculoRepo ??  new VeiculoRepository(_context); }
+            get { return _vehicleRepo = _vehicleRepo ??  new VehicleRepository(_context); }
         }
 
-        public IConfiguracaoValorHoraRepository ConfiguracaoValorHoraRepository
+        public IHourPriceConfigurationRepository HourPriceConfigurationRepository
         {
-            get { return _configuracaoValorHoraRepo = _configuracaoValorHoraRepo ?? new ConfiguracaoValorHoraRepository(_context); }
+            get { return _hourPriceConfigurationRepo = _hourPriceConfigurationRepo ?? new HourPriceConfigurationRepository(_context); }
         }
 
-        public IEntradaRepository EntradaRepository 
+        public IEntryRepository EntryRepository 
         {
-            get { return _entradaRepo  = _entradaRepo ?? new EntradaRepository(_context); }
+            get { return _entryRepo  = _entryRepo ?? new EntryRepository(_context); }
         }
 
-        public ISaidaRepository SaidaRepository
+        public IExitRepository ExitRepository
         {
-            get { return _saidaRepo = _saidaRepo ?? new SaidaRepository(_context); }
+            get { return _exitRepo = _exitRepo ?? new ExitRepository(_context); }
         }
 
         public async Task Commit()

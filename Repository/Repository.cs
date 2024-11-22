@@ -35,21 +35,18 @@ namespace Estacionei.Repository
         public async Task<T> AddAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
-            //await _context.SaveChangesAsync();
             return entity;
         }
 
         public  T DeleteAsync(T entity)
         {
             _context.Set<T>().Remove(entity);
-            //await _context.SaveChangesAsync();
             return entity;
         }
 
         public T UpdateAsync(T entity)
         {
             _context.Set<T>().Entry(entity).State = EntityState.Modified;
-            //await _context.SaveChangesAsync();
             return entity;
         }
 

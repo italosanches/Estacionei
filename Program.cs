@@ -22,7 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Minha API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Estacionei", Version = "v1" });
 
     // Definir o esquema de segurança para autenticação
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -48,33 +48,46 @@ builder.Services.AddSwaggerGen(c =>
                 }
             });
 });
-    
-
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
-builder.Services.AddScoped<IClienteService, ClienteService>();
-builder.Services.AddScoped<IVeiculoRepository,VeiculoRepository>();
-builder.Services.AddScoped<IVeiculoService, VeiculoService>();
-builder.Services.AddScoped<IEntradaRepository,EntradaRepository>();
-builder.Services.AddScoped<IEntradaService,EntradaService>();   
-builder.Services.AddScoped<IConfiguracaoValorHoraRepository, ConfiguracaoValorHoraRepository>();
-builder.Services.AddScoped<IConfiguracaoValorHoraService, ConfiguracaoValorHoraService>();
-builder.Services.AddScoped<ISaidaRepository, SaidaRepository>();
-builder.Services.AddScoped<ISaidaService, SaidaService>();
-builder.Services.AddScoped<INewAuthenticationService, NewAuthenticationService>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddScoped<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IEntryRepository, EntryRepository>();
+builder.Services.AddScoped<IEntryService, EntryService>();
+builder.Services.AddScoped<IHourPriceConfigurationRepository, HourPriceConfigurationRepository>();
+builder.Services.AddScoped<IHourPriceConfiguration, HourPriceConfigurationService>();
+builder.Services.AddScoped<IExitRepository, ExitRepository>();
+builder.Services.AddScoped<IExitService, ExitService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-                             .AddEntityFrameworkStores<AppDbContext>()
-                             .AddDefaultTokenProviders();
+
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>
+    (options =>
+    {
+        options.Password.RequireDigit = true; // ao menos um dígito
+        options.Password.RequiredLength = 6; // comprimento mínimo
+        options.Password.RequireNonAlphanumeric = false; // caracteres especiais
+        options.Password.RequireUppercase = true; // letras maiúsculas
+        options.Password.RequireLowercase = true; // letras minúsculas
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+             
+       
+
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 var secretKey = builder.Configuration["JwtSettings:SecretKey"] ?? throw new ArgumentException("Invalid secret key!!");
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -88,27 +101,62 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
-        ValidateIssuerSigningKey = false,
+        ValidateIssuerSigningKey = true,
         ClockSkew = TimeSpan.Zero,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
     };
 }
 );
 
-builder.Services.AddAuthorization(options => {
-    options.AddPolicy("AdminOnly",policy => policy.RequireRole("Admin"));
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
     options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
-    }
+}
 );
 
-var app = builder.Build();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin() // Permite qualquer origem (ajustar para uma origem específica em produção)
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
+var app = builder.Build();
+app.UseCors("AllowAll"); // Habilitar CORS
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
     app.ConfigureExceptionHandler();
+}
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    try
+    {
+        // Executa as migrations
+        dbContext.Database.Migrate();
+        Console.WriteLine("Migrations applied successfully!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred while applying migrations: {ex.Message}");
+    }
+}
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    await SeedData.Initialize(services, userManager, roleManager);
 }
 
 app.UseHttpsRedirection();
