@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Estacionei.DTOs.Cliente;
+using Estacionei.DTOs.Customer;
 using Estacionei.Enums;
 using Estacionei.Models;
 using Estacionei.Pagination;
@@ -17,26 +18,26 @@ using System.Net;
 
 namespace Estacionei.Controllers
 {
-    [Route("api/clientes")]
+    [Route("api/customers")]
     [ApiController]
-    [Authorize(Policy = "UserOnly")]
-    public class ClientesController : ControllerBase
+    //[Authorize(Policy = "UserOnly")]
+    public class CustomersController : ControllerBase
     {
-        private readonly IClienteService _clienteService;
+        private readonly ICustomerService _customerService;
 
-        public ClientesController(IClienteService clienteService)
+        public CustomersController(ICustomerService customerService)
         {
-            _clienteService = clienteService;
+            _customerService = customerService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] ClienteQueryParameters queryParameters)
+        public async Task<IActionResult> GetAll([FromQuery] CustomerQueryParameters customerQueryParameters)
         {
-            var result = await _clienteService.GetAllClienteByPaginationAsync(queryParameters);
+            var result = await _customerService.GetAllCustomersByPaginationAsync(customerQueryParameters);
 
             if (result.Success)
             {
-                var paginationMetadata = PaginationMetadata<ClienteResponseDto>.CreatePaginationMetadata(result.Data);
+                var paginationMetadata = PaginationMetadata<CustomerResponseDto>.CreatePaginationMetadata(result.Data);
                 Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
                 return StatusCode((int)result.StatusCode, result.Data);
             }
@@ -48,7 +49,7 @@ namespace Estacionei.Controllers
         public async Task<IActionResult> GetById(int id)
         {
 
-            var result = await _clienteService.GetClienteByIdAsync(id);
+            var result = await _customerService.GetCustomerByIdAsync(id);
             if (result.Success)
             {
                 return StatusCode((int)result.StatusCode, result.Data);
@@ -60,21 +61,21 @@ namespace Estacionei.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ClienteRequestCreateDto clientedto)
+        public async Task<IActionResult> Create(CustomerRequestCreateDto customerDto)
         {
-            if (clientedto.Veiculo is not null)
+            if (customerDto.Vehicle is not null)
             {
-                bool validateEnum = Enum.IsDefined(typeof(TipoVeiculo), clientedto.Veiculo.TipoVeiculo);
+                bool validateEnum = Enum.IsDefined(typeof(VehicleType), customerDto.Vehicle.VehicleType);
                 if (!validateEnum)
                 {
                     return BadRequest("Tipo do veiculo é invalido");
                 }
 
             }
-            var result = await _clienteService.AddClienteAsync(clientedto);
+            var result = await _customerService.AddCustomerAsync(customerDto);
             if (result.Success)
             {
-                return CreatedAtAction(nameof(GetById), new { id = result.Data.ClienteId }, result.Data);
+                return CreatedAtAction(nameof(GetById), new { id = result.Data.CustomerId }, result.Data);
             }
             else
             {
@@ -84,21 +85,21 @@ namespace Estacionei.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, ClienteRequestUpdateDto clientedto)
+        public async Task<IActionResult> Update(int id, CustomerRequestUpdateDto customerDto)
         {
             if (id <= 0)
             {
                 return BadRequest("ID invalido");
             }
-            clientedto.ClienteId = id;
-            var result = await _clienteService.UpdateClienteAsync(clientedto);
+            customerDto.CustomerId = id;
+            var result = await _customerService.UpdateCustomerAsync(customerDto);
             return StatusCode((int)result.StatusCode, result.Message);
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _clienteService.DeleteClienteAsync(id);
+            var result = await _customerService.DeleteCustomerAsync(id);
             return StatusCode((int)result.StatusCode, result.Message);
         }
 

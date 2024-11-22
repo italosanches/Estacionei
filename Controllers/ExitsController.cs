@@ -13,23 +13,23 @@ using System.Net;
 
 namespace Estacionei.Controllers
 {
-    [Route("api/saidas")]
+    [Route("api/exits")]
     [ApiController]
     [Authorize(Policy = "UserOnly")]
 
-    public class SaidasController : ControllerBase
+    public class ExitsController : ControllerBase
     {
-        private ISaidaService _saidaService;
+        private IExitService _extiService;
 
-        public SaidasController(ISaidaService saidaService)
+        public ExitsController(IExitService extiService)
         {
-            _saidaService = saidaService;
+            _extiService = extiService;
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await _saidaService.GetSaida(id);
+            var result = await _extiService.GetExitById(id);
             if (result.Success)
             {
                 return StatusCode((int)result.StatusCode, result.Data);
@@ -40,12 +40,12 @@ namespace Estacionei.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] SaidaQueryParameters saidaQueryParameters)
+        public async Task<IActionResult> GetAll([FromQuery] ExitQueryParameters exitQueryParameters)
         {
-            var result = await _saidaService.GetAllSaidas(saidaQueryParameters);
+            var result = await _extiService.GetAllExits(exitQueryParameters);
             if (result.Success)
             {
-                var paginationMetadata = PaginationMetadata<SaidaResponseDto>.CreatePaginationMetadata(result.Data);
+                var paginationMetadata = PaginationMetadata<ExitResponseDto>.CreatePaginationMetadata(result.Data);
                 Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
                 return StatusCode((int)result.StatusCode, result.Data);
             }
@@ -53,23 +53,23 @@ namespace Estacionei.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(SaidaRequestDto saidaRequestDto)
+        public async Task<IActionResult> Create(ExitRequestDto exitRequestDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _saidaService.CreateSaida(saidaRequestDto);
+            var result = await _extiService.CreateExit(exitRequestDto);
             if (result.Success)
             {
-                return CreatedAtAction(nameof(GetById), new { id = result.Data.SaidaId }, result.Data);
+                return CreatedAtAction(nameof(GetById), new { id = result.Data.ExitId }, result.Data);
             }
             return StatusCode((int)result.StatusCode, result.Message);
         }
 
-        [HttpPut("{id:int}/dataSaida")]
+        [HttpPut("{id:int}/exitDate")]
 
-        public async Task<IActionResult> UpdateDateSaida(SaidaUpdateRequestDto saidaUpdateRequestDto, int id)
+        public async Task<IActionResult> UpdateDateSaida(ExitUpdateRequestDto exitUpdateRequestDto, int id)
         {
             if (!ModelState.IsValid)
             {
@@ -79,8 +79,8 @@ namespace Estacionei.Controllers
             {
                 return BadRequest("ID invalido.");
             }
-            saidaUpdateRequestDto.SaidaId = id;
-            var result = await _saidaService.UpdateDateSaida(saidaUpdateRequestDto);
+            exitUpdateRequestDto.ExitId = id;
+            var result = await _extiService.UpdateExitDate(exitUpdateRequestDto);
             if (result.Success)
             {
                 return StatusCode((int)result.StatusCode, result.Data);
@@ -91,7 +91,7 @@ namespace Estacionei.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _saidaService.DeleteSaida(id);
+            var result = await _extiService.DeleteExit(id);
             return StatusCode((int)result.StatusCode, result.Message);
         }
 

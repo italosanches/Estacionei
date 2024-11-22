@@ -12,29 +12,29 @@ using System.Net;
 
 namespace Estacionei.Controllers
 {
-    [Route("api/entradas")]
+    [Route("api/entries")]
     [ApiController]
     [Authorize(Policy = "Useronly")]
-    public class EntradasController : ControllerBase
+    public class EntriesController : ControllerBase
     {
-        private readonly IEntradaService _entradaService;
+        private readonly IEntryService _entryService;
 
-        public EntradasController(IEntradaService entradaService)
+        public EntriesController(IEntryService entryService)
         {
-            _entradaService = entradaService;
+            _entryService = entryService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPaginated([FromQuery] EntradaQueryParameters queryParameters)
+        public async Task<IActionResult> GetAllPaginated([FromQuery] EntryQueryParameters entryQueryParameters)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _entradaService.GetAllEntradas(queryParameters);
+            var result = await _entryService.GetAllEntries(entryQueryParameters);
             if (result.Success)
             {
-                var paginationMetadata = PaginationMetadata<EntradaResponseDto>.CreatePaginationMetadata(result.Data);
+                var paginationMetadata = PaginationMetadata<EntryResponseDto>.CreatePaginationMetadata(result.Data);
                 Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
                 return StatusCode((int)result.StatusCode, result.Data);
             }
@@ -44,16 +44,16 @@ namespace Estacionei.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(EntradaRequestDto entradaRequestDto)
+        public async Task<IActionResult> Create(EntryRequestDto entryRequestDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _entradaService.CreateEntrada(entradaRequestDto);
+            var result = await _entryService.CreateEntry(entryRequestDto);
             if (result.Success)
             {
-                return CreatedAtAction(nameof(GetById), new { id = result.Data.EntradaId }, result.Data);
+                return CreatedAtAction(nameof(GetById), new { id = result.Data.EntryId }, result.Data);
             }
             return StatusCode((int)result.StatusCode, result.Message);
 
@@ -70,7 +70,7 @@ namespace Estacionei.Controllers
             {
                 return BadRequest("Id invalido.");
             }
-            var result = await _entradaService.GetEntradaById(id);
+            var result = await _entryService.GetEntryById(id);
             if (result.Success)
             {
                 return StatusCode((int)result.StatusCode, result.Data);
@@ -80,7 +80,7 @@ namespace Estacionei.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, EntradaRequestDto entradaRequestDto)
+        public async Task<IActionResult> Update(int id, EntryRequestDto entryRequestDto)
         {
             if (!ModelState.IsValid)
             {
@@ -90,8 +90,8 @@ namespace Estacionei.Controllers
             {
                 return BadRequest("Id invalido.");
             }
-            entradaRequestDto.EntradaId = id;
-            var result = await _entradaService.Update(entradaRequestDto);
+            entryRequestDto.EntryId = id;
+            var result = await _entryService.UpdateAsync(entryRequestDto);
             return StatusCode((int)result.StatusCode, result.Message);
         }
 
@@ -107,7 +107,7 @@ namespace Estacionei.Controllers
             {
                 return BadRequest("Id invalido.");
             }
-            var result = await _entradaService.Delete(id);
+            var result = await _entryService.DeleteAsync(id);
             return StatusCode((int)result.StatusCode, result.Message);
         }
 

@@ -10,16 +10,16 @@ using System.Net;
 
 namespace Estacionei.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/hourPriceConfiguration")]
     [ApiController]
     [Authorize(Policy = "UserOnly")]
-    public class ConfiguracoesValoresHoraController : ControllerBase
+    public class HourPriceConfigurationsController : ControllerBase
     {
-        private readonly IConfiguracaoValorHoraService _confValoHoraService;
+        private readonly IHourPriceConfiguration _hourPriceConfService;
 
-        public ConfiguracoesValoresHoraController(IConfiguracaoValorHoraService confValoHoraService)
+        public HourPriceConfigurationsController(IHourPriceConfiguration hourPriceConfService)
         {
-            _confValoHoraService = confValoHoraService;
+            _hourPriceConfService = hourPriceConfService;
             
         }
 
@@ -27,7 +27,7 @@ namespace Estacionei.Controllers
 
         public async Task<IActionResult> GetAll()
         {
-            var result = await _confValoHoraService.GetAllConf();
+            var result = await _hourPriceConfService.GetAllConf();
             return StatusCode((int)result.StatusCode, result.Data);
         }
 
@@ -35,7 +35,7 @@ namespace Estacionei.Controllers
 
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await _confValoHoraService.GetById(id);
+            var result = await _hourPriceConfService.GetById(id);
             if (result.Success)
             {
                 return StatusCode((int)result.StatusCode, result.Data);
@@ -43,10 +43,10 @@ namespace Estacionei.Controllers
             return StatusCode((int)result.StatusCode, result.Message);
 
         }
-        [HttpGet("TipoVeiculo/{tipo:int}")]
-        public async Task<IActionResult> GetByTipo(int tipo)
+        [HttpGet("vehicleType/{type:int}")]
+        public async Task<IActionResult> GetByTipo(int type)
         {
-            var result = await _confValoHoraService.GetByTipoVeiculo((TipoVeiculo)tipo);
+            var result = await _hourPriceConfService.GetByVehicleType((VehicleType)type);
             if (result.Success)
             {
                 return StatusCode((int)result.StatusCode, result.Data);
@@ -57,22 +57,22 @@ namespace Estacionei.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(ConfiguracaoValorHoraRequestDto ConfiguracaoValorHoraRequestDto)
+        public async Task<IActionResult> Create(HourPriceConfigurationRequestDto hourPriceConfRequestDto)
         {
-            var result = await _confValoHoraService.CreateConf(ConfiguracaoValorHoraRequestDto);
+            var result = await _hourPriceConfService.CreateConf(hourPriceConfRequestDto);
             if (result.Success)
             {
-                return CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data);
+                return CreatedAtAction(nameof(GetById), new { id = result.Data.HourPriceConfigurationId }, result.Data);
             }
             return StatusCode((int)result.StatusCode,result.Message);
 
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, ConfiguracaoValorHoraRequestDto ConfiguracaoValorHoraRequestDto)
+        public async Task<IActionResult> Update(int id, HourPriceConfigurationRequestDto hourPriceConfRequestDto)
         {
-            ConfiguracaoValorHoraRequestDto.Id = id;
-            var result = await _confValoHoraService.UpdateConf(ConfiguracaoValorHoraRequestDto);
+            hourPriceConfRequestDto.HourPriceConfigurationId = id;
+            var result = await _hourPriceConfService.UpdateConf(hourPriceConfRequestDto);
             return StatusCode((int)result.StatusCode, result.Message);
         }
     }

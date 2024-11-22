@@ -1,10 +1,11 @@
 ﻿using Estacionei.DTOs;
-using Estacionei.DTOs.Veiculo;
+using Estacionei.DTOs.Vehicle;
 using Estacionei.DTOs.Veiculos;
 using Estacionei.Enums;
 using Estacionei.Models;
 using Estacionei.Pagination;
-using Estacionei.Pagination.Parameters.Veiculo;
+using Estacionei.Pagination.Parameters.Vehicle;
+using Estacionei.Services;
 using Estacionei.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,30 +16,30 @@ using System.Text.RegularExpressions;
 
 namespace Estacionei.Controllers
 {
-    [Route("api/veiculos")]
+    [Route("api/vehicles")]
     [ApiController]
     [Authorize(Policy = "UserOnly")]
-    public class VeiculosController : ControllerBase
+    public class VehiclesController : ControllerBase
     {
-        private readonly IVeiculoService _veiculoService;
+        private readonly IVehicleService _vehicleService;
 
 
-        public VeiculosController(IVeiculoService veiculoService)
+        public VehiclesController(IVehicleService vehicleService)
         {
-            _veiculoService = veiculoService;
+            _vehicleService = vehicleService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery]VeiculoQueryParameters queryParameters)
+        public async Task<IActionResult> GetAllAsync([FromQuery]VehicleQueryParameters vehicleQueryParameters)
         {
-            if(queryParameters.TipoVeiculo != 0 && (!_veiculoService.ValidateTypeVehicle((int)queryParameters.TipoVeiculo)))
+            if(vehicleQueryParameters.VehicleType != 0 && (!_vehicleService.ValidateVehicleType((int)vehicleQueryParameters.VehicleType)))
             {
-                return BadRequest("Tipo de veiculo incorreto");
+                return BadRequest("Tipo de Vehicle incorreto");
             }
 
-            var result = await _veiculoService.GetAllAsync(queryParameters);
+            var result = await _vehicleService.GetAllAsync(vehicleQueryParameters);
             if (result.Success)
             {
-                var paginationMetadata = PaginationMetadata<VeiculoResponseDto>.CreatePaginationMetadata(result.Data);
+                var paginationMetadata = PaginationMetadata<VehicleResponseDto>.CreatePaginationMetadata(result.Data);
                 Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
                 return StatusCode((int)result.StatusCode, result.Data);
             }
@@ -50,7 +51,7 @@ namespace Estacionei.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await _veiculoService.GetVeiculoByIdAsync(id);
+            var result = await _vehicleService.GetVehicleByIdAsync(id);
             if (result.Success)
             {
                 return StatusCode((int)result.StatusCode, result.Data);
@@ -61,14 +62,14 @@ namespace Estacionei.Controllers
             }
         }
 
-        [HttpGet("{placa}")]
-        public async Task<IActionResult> GetByPlaca(string placa)
+        [HttpGet("{licensePlate}")]
+        public async Task<IActionResult> GetByLicensePlate(string licensePlate)
         {
-            if (!Regex.IsMatch(placa, "^[a-zA-Z0-9]+$"))
+            if (!Regex.IsMatch(licensePlate, "^[a-zA-Z0-9]+$"))
             {
                 return BadRequest("Placa invalida, a placa deve conter apenas letras e numeros!");
             }
-            var result = await _veiculoService.GetVeiculoByPlacaAsync(placa);
+            var result = await _vehicleService.GetVehicleByLicensePlateAsync(licensePlate);
             if (result.Success)
             {
                 return StatusCode((int)result.StatusCode, result.Data);
@@ -81,33 +82,33 @@ namespace Estacionei.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(VeiculoRequestDto veiculoCreateDto)
+        public async Task<IActionResult> Create(VehicleRequestDto vehicleCreateDto)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if(veiculoCreateDto.ClienteId <= 0)
+            if(vehicleCreateDto.CustomerId <= 0)
             {
                 return BadRequest("ID do veiculo invalido.");
             }
-            var result = await _veiculoService.CreateVehicle(veiculoCreateDto);
+            var result = await _vehicleService.CreateVehicle(vehicleCreateDto);
             if (result.Success)
             {
-                return CreatedAtAction(nameof(GetById), new { id = result.Data.VeiculoId }, result.Data);
+                return CreatedAtAction(nameof(GetById), new { id = result.Data.VehicleId }, result.Data);
             }
             return StatusCode((int)result.StatusCode, result.Message);
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, VeiculoRequestDto veiculoUpdateDto)
+        public async Task<IActionResult> Update(int id, VehicleRequestDto vehicleUpdateDto)
         {
             if (id <= 0)
             {
                 return BadRequest("ID do veiculo invalido.");
             }
-            veiculoUpdateDto.VeiculoId = id;
-            var result = await _veiculoService.UpdateVeiculoAsync(veiculoUpdateDto);
+            vehicleUpdateDto.VehicleId = id;
+            var result = await _vehicleService.UpdateVehicleAsync(vehicleUpdateDto);
             return StatusCode((int)result.StatusCode, result.Message);
         }
         [HttpDelete("{id:int}")]
@@ -117,7 +118,7 @@ namespace Estacionei.Controllers
             {
                 return BadRequest("ID do veiculo invalido.");
             }
-            var result = await _veiculoService.DeleteVeiculoAsync(id);
+            var result = await _vehicleService.DeleteVehicleAsync(id);
             return StatusCode((int)result.StatusCode, result.Message);
         }
     }
