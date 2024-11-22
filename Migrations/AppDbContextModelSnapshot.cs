@@ -97,131 +97,131 @@ namespace Estacionei.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Estacionei.Models.Cliente", b =>
+            modelBuilder.Entity("Estacionei.Models.Customer", b =>
                 {
-                    b.Property<int>("ClienteId")
+                    b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClienteId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"));
 
-                    b.Property<string>("ClienteNome")
+                    b.Property<string>("CustomerName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("ClienteTelefone")
+                    b.Property<string>("CustomerPhone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ClienteId");
+                    b.HasKey("CustomerId");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("Estacionei.Models.ConfiguracaoValorHora", b =>
+            modelBuilder.Entity("Estacionei.Models.Entry", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("EntryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EntryId"));
 
-                    b.Property<int>("TipoVeiculo")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ValorHora")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TipoVeiculo")
-                        .IsUnique();
-
-                    b.ToTable("ConfiguracoesValoresHora");
-                });
-
-            modelBuilder.Entity("Estacionei.Models.Entrada", b =>
-                {
-                    b.Property<int>("EntradaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EntradaId"));
-
-                    b.Property<DateTime>("DataEntrada")
+                    b.Property<DateTime>("EntryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("StatusEntrada")
+                    b.Property<int>("EntryStatus")
                         .HasColumnType("int");
 
-                    b.Property<int>("VeiculoId")
+                    b.Property<int>("VehicleId")
                         .HasColumnType("int");
 
-                    b.HasKey("EntradaId");
+                    b.HasKey("EntryId");
 
-                    b.HasIndex("VeiculoId");
+                    b.HasIndex("VehicleId");
 
-                    b.ToTable("Entrada");
+                    b.ToTable("Entries");
                 });
 
-            modelBuilder.Entity("Estacionei.Models.Saida", b =>
+            modelBuilder.Entity("Estacionei.Models.Exit", b =>
                 {
-                    b.Property<int>("SaidaId")
+                    b.Property<int>("ExitId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaidaId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExitId"));
 
-                    b.Property<DateTime>("DataSaida")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("EntradaId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ValorCobrado")
+                    b.Property<decimal>("ChargedAmount")
                         .HasColumnType("decimal(10,2)");
 
-                    b.HasKey("SaidaId");
+                    b.Property<int>("EntryId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("EntradaId")
+                    b.Property<DateTime>("ExitDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ExitId");
+
+                    b.HasIndex("EntryId")
                         .IsUnique();
 
-                    b.ToTable("Saida");
+                    b.ToTable("Exits");
                 });
 
-            modelBuilder.Entity("Estacionei.Models.Veiculo", b =>
+            modelBuilder.Entity("Estacionei.Models.HourPriceConfiguration", b =>
                 {
-                    b.Property<int>("VeiculoId")
+                    b.Property<int>("HourPriceConfigurationId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VeiculoId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HourPriceConfigurationId"));
 
-                    b.Property<int>("ClienteId")
+                    b.Property<decimal>("HourlyRate")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("VehicleType")
                         .HasColumnType("int");
 
-                    b.Property<int>("TipoVeiculo")
+                    b.HasKey("HourPriceConfigurationId");
+
+                    b.HasIndex("VehicleType")
+                        .IsUnique();
+
+                    b.ToTable("HourPriceConfigurations");
+                });
+
+            modelBuilder.Entity("Estacionei.Models.Vehicle", b =>
+                {
+                    b.Property<int>("VehicleId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("VeiculoModelo")
-                        .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VehicleId"));
 
-                    b.Property<string>("VeiculoPlaca")
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VehicleLicensePlate")
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.HasKey("VeiculoId");
+                    b.Property<string>("VehicleModel")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
-                    b.HasIndex("ClienteId");
+                    b.Property<int>("VehicleType")
+                        .HasColumnType("int");
 
-                    b.HasIndex("VeiculoPlaca")
+                    b.HasKey("VehicleId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("VehicleLicensePlate")
                         .IsUnique();
 
-                    b.ToTable("Veiculos");
+                    b.ToTable("Vehicles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -357,37 +357,37 @@ namespace Estacionei.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Estacionei.Models.Entrada", b =>
+            modelBuilder.Entity("Estacionei.Models.Entry", b =>
                 {
-                    b.HasOne("Estacionei.Models.Veiculo", "Veiculo")
+                    b.HasOne("Estacionei.Models.Vehicle", "Vehicle")
                         .WithMany()
-                        .HasForeignKey("VeiculoId")
+                        .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Veiculo");
+                    b.Navigation("Vehicle");
                 });
 
-            modelBuilder.Entity("Estacionei.Models.Saida", b =>
+            modelBuilder.Entity("Estacionei.Models.Exit", b =>
                 {
-                    b.HasOne("Estacionei.Models.Entrada", "Entrada")
-                        .WithOne("Saida")
-                        .HasForeignKey("Estacionei.Models.Saida", "EntradaId")
+                    b.HasOne("Estacionei.Models.Entry", "Entry")
+                        .WithOne("Exit")
+                        .HasForeignKey("Estacionei.Models.Exit", "EntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Entrada");
+                    b.Navigation("Entry");
                 });
 
-            modelBuilder.Entity("Estacionei.Models.Veiculo", b =>
+            modelBuilder.Entity("Estacionei.Models.Vehicle", b =>
                 {
-                    b.HasOne("Estacionei.Models.Cliente", "Cliente")
-                        .WithMany("VeiculosCliente")
-                        .HasForeignKey("ClienteId")
+                    b.HasOne("Estacionei.Models.Customer", "Customer")
+                        .WithMany("CustomerVehicles")
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cliente");
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -441,14 +441,14 @@ namespace Estacionei.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Estacionei.Models.Cliente", b =>
+            modelBuilder.Entity("Estacionei.Models.Customer", b =>
                 {
-                    b.Navigation("VeiculosCliente");
+                    b.Navigation("CustomerVehicles");
                 });
 
-            modelBuilder.Entity("Estacionei.Models.Entrada", b =>
+            modelBuilder.Entity("Estacionei.Models.Entry", b =>
                 {
-                    b.Navigation("Saida")
+                    b.Navigation("Exit")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618
