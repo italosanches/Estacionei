@@ -1,107 +1,68 @@
 # Estacionei 🚗
 API desenvolvida para controlar as entradas e saídas de veículos em um estacionamento. A aplicação permite o cadastro de clientes, veículos com seu respectivo tipo, configuração de tarifas por hora com base no tipo de veículo, além de registrar entradas e saídas.
 
-Atualmente, a API está em fase de desenvolvimento, mas os **endpoints** listados abaixo já estão em pleno funcionamento.
-
 ## Como Utilizar?
 
-1. **Instalar o .NET SDK**.
-2. **Usar uma IDE**: Recomenda-se utilizar o Visual Studio.
-3. **Clonar o projeto**.
-4. **Instalar o SQL Server**: Futuramente, irei adicionar a imagem junto com a aplicação em container.
-5. **Rodar o seguinte comando via Console de Gerenciador de Pacotes**:
-   ```bash
-   dotnet ef database update
+1. **Instalar o Docker**.
+2. **Clonar o repositorio.**
+3. **Abra o terminal e va ate a pasta raiz da solução com o comando CD, exemplo C:\Users\Usuario\source\repos\Estacionei**.
+4. **Rode o seguinte comando no terminal: docker-compose up --build**'Aguarde o docker fazer o trabalho. =)'
+5. **Acesse o Swagger via http://localhost:8080/swagger/index.html**:
+6. **Utilize o seguinte login para a autenticar no EndPoint de Login**
+   ``` Json
+      {
+        "email": "admin@default.com",
+        "password": "P@ssw0rd123!"
+      }
 
-6 - Aguarde a criação do banco e suas tabelas.   
-7 - Dentro do codigo, altere o arquivo appsettings.Development.json -> ConnectionString  -> DefaultConnection -> Alterando apenas a instancia do SQL
-``` json
-"Server=InstanciaSQL;Database=DB_Estacionei;Trusted_Connection=True; TrustServerCertificate=True;"
-```
-8 - De f5 e se divirta.
-
-A API está em desenvolvimento e estou sempre trazendo melhorias. Qualquer dica ou dúvida, basta me procurar via LinkedIn. Agradeço pela compreensão!
+8. **Desfrute da API**
+   
 # Endpoints
 
-## Clientes 🙎
-Todos os Enpoints que são voltados ao cadastro ou atualização o telefone é obrigatorio e também precisa ser passado um telefone valido no seguinte formato 1799999999  
-### **GET - Todos os Clientes**
-Endpoint utilizado para recuperar todos os clientes e seus respectivos veículos. É possível utilizar parâmetros de paginação via URL, como o tamanho da página e o número da página desejada.
+### **Autenticação**  
+Serviço para criar e remover permissões, criar e remover usuários, e listar usuários.
 
-- **URL**: `GET https://servidor:porta/api/Clientes?PageNumber=1&PageSize=10`
+---
 
-#### Exemplo de retorno:
-```json
-[
-  {
-    "clienteId": 3,
-    "clienteNome": "string",
-    "clienteTelefone": "17999999999",
-    "veiculosCliente": []
-  },
-  {
-    "clienteId": 1003,
-    "clienteNome": "ASSASA",
-    "clienteTelefone": "17999999999",
-    "veiculosCliente": [
-      {
-        "veiculoPlaca": "string",
-        "veiculoModelo": "string",
-        "tipoVeiculo": 1
-      }
-    ]
-  }
-]
-```
-### **GET - Cliente por ID**
-Endpoint utilizado para recuperar um cliente específico pelo seu ID. Não possui paginação.
+### **Clientes** 🙎  
+Todos os endpoints voltados ao cadastro ou atualização de clientes exigem que o telefone seja obrigatório e válido no seguinte formato: **1799999999**.
 
-- **URL**: `GET https://servidor:porta/api/Clientes/{id}`
+---
 
-#### Exemplo de retorno:
-```json
-{
-  "clienteId": 1008,
-  "clienteNome": "Dexter",
-  "clienteTelefone": "1799999999",
-  "veiculosCliente": [
-    {
-      "veiculoPlaca": "CXC5422",
-      "veiculoModelo": "Uno",
-      "tipoVeiculo": 1
-    },
-    {
-      "veiculoPlaca": "HJSK22",
-      "veiculoModelo": "Gol",
-      "tipoVeiculo": 1
-    }
-  ]
-```
-### **POST - Criar Cliente**
-Este endpoint é utilizado para o cadastro de clientes, sendo obrigatório informar um nome e um telefone. Caso queira cadastrar um veículo junto ao cliente, basta incluí-lo no corpo da requisição.
+### **Veículos** 🚗  
+Cadastro, listagem, remoção e atualização de veículos. As placas são validadas para evitar duplicidades.  
+Um cliente pode possuir **N veículos**.
 
-- **URL**: `POST https://servidor:porta/api/Clientes`
+**Tipos de veículos permitidos:**  
+1. Carro  
+2. Moto  
+3. Camionete  
 
-#### Exemplo de request:
-```json
-{
-  "clienteNome": "string",
-  "clienteTelefone": "string",
-  "Vehicle": {
-    "veiculoPlaca": "string",
-    "veiculoModelo": "string",
-    "tipoVeiculo": 1
-  }
-}
-```
-### **PUT - Atualizar Cliente**
-Este endpoint é utilizado para atualizar o cadastro de um cliente. Neste endpoint, não é possível alterar o Vehicle do cliente, sendo obrigatório o preenchimento do telefone.
+---
 
-- **URL**: `PUT https://servidor:porta/api/Clientes/{id}`
+### **Configuração de Valor por Hora** 🕛  
+Cadastro do valor cobrado por hora para cada tipo de veículo. É permitido apenas um cadastro para cada tipo de veículo.  
 
-#### Exemplo de request:
-```json
-{
-  "clienteNome": "string",
-  "clienteTelefone": "string"
-}
+**Tipos de veículos permitidos:**  
+1. Carro  
+2. Moto  
+3. Camionete  
+
+---
+
+### **Entradas** 🎟️  
+Entrada no estacionamento. Deve ser passado o **ID do veículo**.  
+
+- Validações realizadas:  
+  - A data inserida deve ser válida e pode ser uma data futura ou passada.  
+  - É verificado se há uma entrada em aberto para o veículo. **Não é permitido mais de uma entrada em aberto para o mesmo veículo.**
+
+---
+
+### **Saídas** 🎟️  
+Saída do estacionamento.  
+
+- Cálculo realizado:  
+  - O tempo que o veículo permaneceu no estacionamento é multiplicado pelo valor configurado por hora do tipo respectivo do veículo.  
+
+---
