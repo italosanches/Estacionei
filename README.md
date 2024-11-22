@@ -20,6 +20,16 @@ API desenvolvida para controlar as entradas e saídas de veículos em um estacio
         "password": "P@ssw0rd123!"
       }
 8. **Entre com o token gerado no cadeado verde no canto esquerdo superior, digite Bearer + token.**
+
+# Acessar o banco👮
+Caso tenha interesse em acessaro o banco de dados você pode fazer isso atras do Adminer.
+Para acessar basta acessar com a url: http://localhost:8082/
+Sistema : MS Sql(Beta)
+Servidor: sqlserver
+Usuário: sa
+Senha: P@ssw0rd123!
+Base de dados: EstacioneiDB
+
  
 # Endpoints
 
