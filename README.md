@@ -1,5 +1,5 @@
 # Estacionei 🚗
-API desenvolvida para controlar as entradas e saídas de veículos em um estacionamento. A aplicação permite o cadastro de clientes, veículos com seu respectivo tipo, configuração de tarifas por hora com base no tipo de veículo, além de registrar entradas e saídas.
+API desenvolvida para controlar as entradas e saídas de veículos em um estacionamento. A aplicação permite o cadastro de clientes, veículos com seus respectivos tipos, configuração de tarifas por hora com base no tipo de veículo, além de registrar entradas e saídas, onde a saída calcula o valor a ser pago com base no tipo de veículo.
 
 ## Como Utilizar?
 
