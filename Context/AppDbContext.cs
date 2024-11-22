@@ -11,13 +11,13 @@ namespace Estacionei.Context
         {
 
         }
-        public DbSet<Cliente> Clientes { get; set; }
-        public DbSet<Veiculo> Veiculos { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Vehicle> Vehicles { get; set; }
 
-        public DbSet<ConfiguracaoValorHora> ConfiguracoesValoresHora { get; set; }
+        public DbSet<HourPriceConfiguration> HourPriceConfigurations { get; set; }
 
-        public DbSet<Entrada> Entrada { get; set; }
-        public DbSet<Saida> Saida { get; set; }
+        public DbSet<Entry> Entries { get; set; }
+        public DbSet<Exit> Exits { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,18 +27,18 @@ namespace Estacionei.Context
             modelBuilder.Entity<ApplicationUser>().HasIndex(user => user.Email).IsUnique();
               
 
-            modelBuilder.Entity<Veiculo>()
-            .HasIndex(v => v.VeiculoPlaca)
+            modelBuilder.Entity<Vehicle>()
+            .HasIndex(v => v.VehicleLicensePlate)
             .IsUnique();
 
-            modelBuilder.Entity<ConfiguracaoValorHora>()
-                .HasIndex(conf => conf.TipoVeiculo)
+            modelBuilder.Entity<HourPriceConfiguration>()
+                .HasIndex(conf => conf.VehicleType)
                 .IsUnique();
 
-            modelBuilder.Entity<Entrada>()
-           .HasOne(e => e.Saida) // Um Entrada tem uma Saida
-           .WithOne(s => s.Entrada) // Uma Saida tem uma Entrada
-           .HasForeignKey<Saida>(s => s.EntradaId) // Chave estrangeira da Saida
+            modelBuilder.Entity<Entry>()
+           .HasOne(e => e.Exit) // Um Entrada tem uma Saida
+           .WithOne(s => s.Entry) // Uma Saida tem uma Entrada
+           .HasForeignKey<Exit>(s => s.EntryId) // Chave estrangeira da Saida
            .OnDelete(DeleteBehavior.Cascade); // Comportamento ao deletar
 
             
