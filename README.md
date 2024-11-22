@@ -87,7 +87,7 @@ Este endpoint é utilizado para o cadastro de clientes, sendo obrigatório infor
 {
   "clienteNome": "string",
   "clienteTelefone": "string",
-  "veiculo": {
+  "Vehicle": {
     "veiculoPlaca": "string",
     "veiculoModelo": "string",
     "tipoVeiculo": 1
@@ -95,7 +95,7 @@ Este endpoint é utilizado para o cadastro de clientes, sendo obrigatório infor
 }
 ```
 ### **PUT - Atualizar Cliente**
-Este endpoint é utilizado para atualizar o cadastro de um cliente. Neste endpoint, não é possível alterar o veiculo do cliente, sendo obrigatório o preenchimento do telefone.
+Este endpoint é utilizado para atualizar o cadastro de um cliente. Neste endpoint, não é possível alterar o Vehicle do cliente, sendo obrigatório o preenchimento do telefone.
 
 - **URL**: `PUT https://servidor:porta/api/Clientes/{id}`
 
